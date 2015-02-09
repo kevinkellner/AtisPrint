@@ -2,14 +2,13 @@ package edu.kit.uneig.atisprint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,9 +17,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 public class SSHConnect extends Activity {
     
@@ -40,9 +41,10 @@ public class SSHConnect extends Activity {
 
         Toast.makeText(this, user+""+password, Toast.LENGTH_SHORT).show();
         InputStream is = null;
+        File tempFile = null;
         try {
             is = getAssets().open("TestFileCopy.txt");
-            File tempFile = new File(getCacheDir().getPath()+"tempFileAtis.txt");
+            tempFile = new File(getCacheDir().getPath()+"tempFileAtis.txt");
             FileWriter write = new FileWriter(tempFile);
             byte b = (byte) is.read();
             while(is.read() != -1) {
@@ -51,18 +53,17 @@ public class SSHConnect extends Activity {
             write.close();
             is.close();
             
+            
         } catch (IOException e1) {
             e1.printStackTrace();
-        } catch (JSchException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        } 
 
+        final File file = tempFile;
         new AsyncTask<Integer, Void, Void>(){
             @Override
             protected Void doInBackground(Integer... params) {
                     try {
-                        copyFileOverSCP(user, password, atisHostname, port, tempFile);
+                        copyFileOverSCP(user, password, atisHostname, port, file);
                         executeRemoteSSHCommand(user, password, atisHostname, port);
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
@@ -73,30 +74,24 @@ public class SSHConnect extends Activity {
         }.execute(1);
     }
     
-    public static String copyFileOverSCP(String username, String password, String hostname, int port, File f) throws JSchException {
+    public static void copyFileOverSCP(String username, String password, String hostname, int port, File file) throws JSchException, FileNotFoundException, SftpException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession(username, hostname, port);
+        Session session = null;
+        session = jsch.getSession(username,hostname,22);
         session.setPassword(password);
-
-        // Avoid asking for key confirmation
         Properties prop = new Properties();
         prop.put("StrictHostKeyChecking", "no");
         session.setConfig(prop);
-
         session.connect();
-
-        // SSH Channel
-        ChannelExec channelssh = (ChannelExec)
-                session.openChannel("exec");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        channelssh.setOutputStream(baos);
-
-        // Execute command
-        channelssh.setCommand("scp "+f.getPath()+" "+username+"@"+hostname+":"+"tempfile.txt"); //create empty testfile if all goes well
-        channelssh.connect();
-        channelssh.disconnect();
-
-        return baos.toString();
+        ChannelSftp channel = null;
+        channel = (ChannelSftp)session.openChannel("sftp");
+        channel.connect();
+//            File localFile = new File("localfilepath");
+            //If you want you can change the directory using the following line.
+//            channel.cd(RemoteDirectoryPath)
+        channel.put(new FileInputStream(file),file.getName());
+            channel.disconnect();
+        session.disconnect();
         
     }
     
@@ -128,24 +123,5 @@ public class SSHConnect extends Activity {
 
         return baos.toString();
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.sshconnect, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
 }
