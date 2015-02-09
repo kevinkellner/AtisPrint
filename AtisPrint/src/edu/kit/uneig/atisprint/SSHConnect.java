@@ -37,34 +37,17 @@ public class SSHConnect extends Activity {
 
         final String user = i.getStringExtra("user");
         final String password = i.getStringExtra("password");
-//        
+        final String filePath = i.getStringExtra("file");
+        final File pdf = new File(filePath);
 
-        Toast.makeText(this, user+""+password, Toast.LENGTH_SHORT).show();
-        InputStream is = null;
-        File tempFile = null;
-        try {
-            is = getAssets().open("TestFileCopy.txt");
-            tempFile = new File(getCacheDir().getPath()+"tempFileAtis.txt");
-            FileWriter write = new FileWriter(tempFile);
-            byte b = (byte) is.read();
-            while(is.read() != -1) {
-                write.write(b);
-            }
-            write.close();
-            is.close();
-            
-            
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } 
 
-        final File file = tempFile;
+        Toast.makeText(this, String.valueOf(pdf.exists()), Toast.LENGTH_LONG).show();
         new AsyncTask<Integer, Void, Void>(){
             @Override
             protected Void doInBackground(Integer... params) {
                     try {
-                        copyFileOverSCP(user, password, atisHostname, port, file);
-                        executeRemoteSSHCommand(user, password, atisHostname, port);
+                        copyFileOverSCP(user, password, atisHostname, port, pdf);
+//                        executeRemoteSSHCommand(user, password, atisHostname, port);
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
