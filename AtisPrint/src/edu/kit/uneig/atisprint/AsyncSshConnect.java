@@ -32,11 +32,8 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         InputStream fis = (InputStream) params[4];
         try {
             try {
-                // final FileInputStream in = (FileInputStream)
-                // getContentResolver().openInputStream(receivedUri);
-
                 copyFileOverSCP(user, password, hostname, port, fis);
-                // executeRemoteSSHCommand(user, password, atisHostname, port);
+                executeRemoteSSHCommand(user, password, hostname, port);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -101,13 +98,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channelssh.setOutputStream(baos);
 
         // Execute command
-        channelssh.setCommand("touch testFile.txt" + new Random().nextInt()); // create
-                                                                              // empty
-                                                                              // testfile
-                                                                              // if
-                                                                              // all
-                                                                              // goes
-                                                                              // well
+        channelssh.setCommand("touch testFile.txt" + new Random().nextInt()); 
         channelssh.connect();
         channelssh.disconnect();
 
