@@ -1,5 +1,6 @@
 package edu.kit.uneig.atisprint;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AsyncResponse {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +32,36 @@ public class MainActivity extends Activity {
         String action = intent.getAction();
         String type = intent.getType();
         
+        Toast.makeText(this, "Action:"+action+"\ntype:"+type, Toast.LENGTH_LONG).show();
         
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("application/pdf".equals(type)) {
-                handleSendPdf(intent); // Handle pdf being sent
+                handleAsyncSendPdf(intent); // Handle pdf being sent
             }else if (type.startsWith("image/")) { 
 //                Toast.makeText(this, intent.toString(), Toast.LENGTH_LONG).show();
                 handleSendPdf(intent);
             }
         } else {
+            
             setContentView(R.layout.activity_main);
         }
+    }
+    
+    public void handleAsyncSendPdf(Intent intent) {
+        InputStream is = null;
+        try {
+          is =  getAssets().open("blatt-13-aufgaben.pdf");
+//          is =  getAssets().open("TestFileCopy.txt");
+      } catch (IOException e2) {
+          // TODO Auto-generated catch block
+          e2.printStackTrace();
+      }
+      
+      final InputStream caInput = new BufferedInputStream(is);
+      
+      ConnectSSH ssh = new ConnectSSH();
+      ssh.delegate = this; //add reference for callback
+      ssh.execute("s_kkelln", "335BA8637F", "i08fs1.ira.uka.de", 22, caInput);
     }
     
     public void handleSendPdf(Intent intent)  {
@@ -104,29 +124,13 @@ public class MainActivity extends Activity {
     }
     
     public void onClickPrint(View v) {
-        
+        handleAsyncSendPdf(new Intent());
       
+    }
 
-      InputStream is = null;
-      File tempFile = null;
-      try {
-          //InputStreamReader
-          is = getAssets().open("TestFileCopy.txt");
-          tempFile = new File(getCacheDir().getPath()+"tempFileAtis.txt");
-          FileWriter write = new FileWriter(tempFile);
-          byte b = (byte) is.read();
-          while(is.read() != -1) {
-              write.write(b);
-          }
-          write.close();
-          is.close();
-          
-          
-      } catch (IOException e1) {
-          e1.printStackTrace();
-      } 
-      
-      Intent sendIntent = new Intent();
-      
+    @Override
+    public void processFinish(String output) {
+        // TODO Auto-generated method stub
+        
     }
 }
