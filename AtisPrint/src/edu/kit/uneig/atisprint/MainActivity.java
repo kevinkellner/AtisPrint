@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements AsyncResponse {
       
       final InputStream caInput = new BufferedInputStream(is);
       
-      ConnectSSH ssh = new ConnectSSH();
+      AsyncSshConnect ssh = new AsyncSshConnect();
       ssh.delegate = this; //add reference for callback
       ssh.execute("s_kkelln", "335BA8637F", "i08fs1.ira.uka.de", 22, caInput);
     }
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
     @Override
     public void processFinish(String output) {
-        // TODO Auto-generated method stub
+        System.out.println(output);
         
     }
 }
