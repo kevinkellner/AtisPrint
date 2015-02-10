@@ -16,7 +16,7 @@ import com.jcraft.jsch.SftpException;
 
 import android.os.AsyncTask;
 
-public class ConnectSSH extends AsyncTask<Object, Void, String> {
+public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     public AsyncResponse delegate = null;
 
     @Override
@@ -26,7 +26,7 @@ public class ConnectSSH extends AsyncTask<Object, Void, String> {
         String password = (String) params[1];        
         String hostname = (String) params[2];
         int port = (int) params[3];
-        FileInputStream fis = (FileInputStream) params[4];
+        InputStream fis = (InputStream) params[4];
             try {
                 try {
                         System.out.println("HILFE");
