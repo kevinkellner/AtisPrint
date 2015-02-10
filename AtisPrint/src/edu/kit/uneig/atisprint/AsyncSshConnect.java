@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Vector;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
+
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -72,7 +74,9 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channel.connect();
         // If you want you can change the directory using the following line.
         // channel.cd(RemoteDirectoryPath)
-        channel.put(file, "testCopySFTP.txt");
+        channel.put(file, "testCopySFTP.pdf");
+
+        
         channel.disconnect();
         session.disconnect();
 
