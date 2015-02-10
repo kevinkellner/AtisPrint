@@ -4,14 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -32,22 +30,32 @@ public class SSHConnect extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
-        Intent i = getIntent();
+        Intent intent = getIntent();
 
 
-        final String user = i.getStringExtra("user");
-        final String password = i.getStringExtra("password");
-        final String filePath = i.getStringExtra("file");
-        final File pdf = new File(filePath);
+        final String user = intent.getStringExtra("user");
+        final String password = intent.getStringExtra("password");
+        
+        final Uri receivedUri = (Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        
+        
 
 
-        Toast.makeText(this, String.valueOf(pdf.exists()), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, receivedUri.toString(), Toast.LENGTH_LONG).show();
         new AsyncTask<Integer, Void, Void>(){
             @Override
             protected Void doInBackground(Integer... params) {
                     try {
-                        copyFileOverSCP(user, password, atisHostname, port, pdf);
-//                        executeRemoteSSHCommand(user, password, atisHostname, port);
+                        try {
+                            final FileInputStream in = (FileInputStream) getContentResolver().openInputStream(receivedUri);
+                            copyFileOverSCP(user, password, atisHostname, port, in);
+                            executeRemoteSSHCommand(user, password, atisHostname, port);
+                        } catch (FileNotFoundException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                        
+
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -57,7 +65,7 @@ public class SSHConnect extends Activity {
         }.execute(1);
     }
     
-    public static void copyFileOverSCP(String username, String password, String hostname, int port, File file) throws JSchException, FileNotFoundException, SftpException {
+    public static void copyFileOverSCP(String username, String password, String hostname, int port, FileInputStream file) throws JSchException, FileNotFoundException, SftpException {
         JSch jsch = new JSch();
         Session session = null;
         session = jsch.getSession(username,hostname,22);
@@ -72,7 +80,7 @@ public class SSHConnect extends Activity {
 //            File localFile = new File("localfilepath");
             //If you want you can change the directory using the following line.
 //            channel.cd(RemoteDirectoryPath)
-        channel.put(new FileInputStream(file),file.getName());
+        channel.put(file,"testCopySFTP");
             channel.disconnect();
         session.disconnect();
         
