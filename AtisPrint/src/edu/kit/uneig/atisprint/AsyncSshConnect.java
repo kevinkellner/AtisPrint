@@ -1,22 +1,19 @@
 package edu.kit.uneig.atisprint;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Vector;
+
+import android.os.AsyncTask;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
-
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
-import android.os.AsyncTask;
 
 public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     public AsyncResponse delegate = null;

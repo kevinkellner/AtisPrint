@@ -10,5 +10,7 @@
     <string name="savePw">Password speichern</string>
     <string name="title_activity_signin">Signin</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="setUserData">Login speichern</string>
+    <string name="print_name">Atis Druck</string>
    
 </resources>

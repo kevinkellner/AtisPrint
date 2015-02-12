@@ -20,6 +20,10 @@ import android.view.View;
 import android.widget.Toast;
 
 public class PrintActivity extends Activity implements AsyncResponse {
+    
+    protected static int SIGN_IN_REQUEST = 0xFF;
+    private String username;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,47 +51,57 @@ public class PrintActivity extends Activity implements AsyncResponse {
 
     public void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
         final Uri receivedUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        BufferedInputStream in = (BufferedInputStream) getContentResolver().openInputStream(receivedUri); 
         
-        AsyncSshConnect ssh = new AsyncSshConnect();
-        ssh.delegate = this; // add reference for callback
-        ssh.execute(getUsername(), getPassword(), "i08fs1.ira.uka.de", 22, in);
+        Intent signIn = new Intent(this, SigninActivity.class);
+        signIn.putExtra(Intent.EXTRA_STREAM, receivedUri);
+                
+        signIn.putExtra("mode", SigninActivity.GET_USERDATA);
+        startActivityForResult(signIn, SIGN_IN_REQUEST);
+        System.out.println("HandleASYNC");
+        
+        
         
 
     }
     
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SIGN_IN_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    final Uri receivedUri = (Uri) data.getParcelableExtra(Intent.EXTRA_STREAM);
+                    InputStream in =  getContentResolver().openInputStream(receivedUri); 
+                    String username = data.getStringExtra("username");
+                    String password = data.getStringExtra("password");
+                    
+                    AsyncSshConnect ssh = new AsyncSshConnect();
+                    ssh.delegate = this; // add reference for callback
+                    ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in);
+                    
+                }catch(FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                
+                
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
+                
+            }
+        }
+    }
+
+    
     public String getUsername() {
-        return "s_kkelln";
+        return username;
     }
     
     public String getPassword() {
-        return "335BA8637F";
+        return password;
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
-
 
     @Override
     public void processFinish(String output) {
         System.out.println(output);
+        finish();
 
     }
 }

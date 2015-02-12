@@ -20,11 +20,14 @@ public class SigninActivity extends Activity {
     private String username;
     private String password;
     
+    private Intent returnIntent;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int mode = getIntent().getIntExtra("mode", SET_USERDATA);
-        
+        returnIntent = new Intent();
+        returnIntent.putExtra(Intent.EXTRA_STREAM, getIntent().getParcelableExtra(Intent.EXTRA_STREAM));
         //this will automatically encrypt the username and password with the ANDROID_ID when saving it
         settings = new ObscuredSharedPreferences(
                 this, this.getPreferences(MODE_PRIVATE));
@@ -41,10 +44,10 @@ public class SigninActivity extends Activity {
         
         //both username and pw is saved, so return them
         if (username != NO_VALUE && password != NO_VALUE) {
-            Intent returnIntent = new Intent();
             returnIntent.putExtra("username", username);
             returnIntent.putExtra("password", password);
             setResult(RESULT_OK, returnIntent);
+            finish();
         } else {
             //either username or pw is not saved, so retrieve them
             setUserData();
@@ -61,9 +64,7 @@ public class SigninActivity extends Activity {
         if (password != NO_VALUE) tfPassword.setText(password);
     }
     
-    public void onClickOk(View w) {
-        Intent returnIntent = new Intent();
-        
+    public void onClickOk(View w) {        
         String password = tfPassword.getText().toString();
         String username = tfUsername.getText().toString();
         boolean savePw = chkSavePw.isChecked();
