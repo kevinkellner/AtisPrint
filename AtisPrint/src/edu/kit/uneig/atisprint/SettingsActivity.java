@@ -19,6 +19,7 @@ public class SettingsActivity extends Activity {
     
     public void onClickPrint(View v) {
         Intent intent = new Intent(this, SigninActivity.class);
+        intent.putExtra("mode", SigninActivity.SET_USERDATA);
         startActivityForResult(intent, SIGN_IN_REQUEST);
     }
 
@@ -28,6 +29,8 @@ public class SettingsActivity extends Activity {
                 String username = data.getStringExtra("username");
                 String password = data.getStringExtra("password");
                 boolean savePw = data.getBooleanExtra("savePw", false);
+                System.out.println(username);
+                System.out.println(password);
                 //TODO: Save user credentials if need be
             } else if (resultCode == RESULT_CANCELED) {
                 System.out.println("Not Okay");
