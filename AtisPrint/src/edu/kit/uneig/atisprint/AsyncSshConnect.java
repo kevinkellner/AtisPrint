@@ -7,7 +7,9 @@ import java.util.Properties;
 import java.util.Random;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
+import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -17,6 +19,9 @@ import com.jcraft.jsch.SftpException;
 
 public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     public AsyncResponse delegate = null;
+    private final String filename = "AtisPrintCache.pdf";
+    private final String createTestFile = "touch testFile.txt" + new Random().nextInt();
+    private final String CMD_GET_PRINTERS = "lpstat -a";
 
     @Override
     protected String doInBackground(Object... params) {
@@ -27,10 +32,11 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         String hostname = (String) params[2];
         int port = (int) params[3];
         InputStream fis = (InputStream) params[4];
+        String ret = "";
         try {
             try {
                 copyFileOverSCP(user, password, hostname, port, fis);
-                executeRemoteSSHCommand(user, password, hostname, port);
+                ret = executeRemoteSSHCommand(user, password, hostname, port, CMD_GET_PRINTERS);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -42,7 +48,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
             e.printStackTrace();
         }
 
-        return "Done";
+        return ret;
     }
 
     @Override
@@ -68,16 +74,17 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channel.connect();
         // If you want you can change the directory using the following line.
         // channel.cd(RemoteDirectoryPath)
-        channel.put(file, "testCopySFTP.pdf");
+        channel.put(file, filename);
 
         
         channel.disconnect();
         session.disconnect();
 
     }
+    
 
     public String executeRemoteSSHCommand(String user, String password,
-            String hostname, int port) throws Exception {
+            String hostname, int port, String command) throws Exception {
         JSch jsch = new JSch();
         Session session = jsch.getSession(user, hostname, port);
         session.setPassword(password);
@@ -95,7 +102,8 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channelssh.setOutputStream(baos);
 
         // Execute command
-        channelssh.setCommand("touch testFile.txt" + new Random().nextInt()); 
+//        channelssh.setCommand("lp -d pool-sw1 "+filename);
+        channelssh.setCommand(command); //only here for testin'. real command above
         channelssh.connect();
         channelssh.disconnect();
 
