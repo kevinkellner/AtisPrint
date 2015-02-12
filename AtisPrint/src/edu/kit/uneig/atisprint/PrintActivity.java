@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements AsyncResponse {
+public class PrintActivity extends Activity implements AsyncResponse {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements AsyncResponse {
                 } 
             } 
         } else {
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_print);
         }
     }
 
@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements AsyncResponse {
     public String getPassword() {
         return "335BA8637F";
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -82,10 +82,8 @@ public class MainActivity extends Activity implements AsyncResponse {
         }
         return super.onOptionsItemSelected(item);
     }
+*/
 
-    public void onClickPrint(View v) {
-
-    }
 
     @Override
     public void processFinish(String output) {

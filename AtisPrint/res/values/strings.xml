@@ -5,5 +5,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sshconnect">SSHConnect</string>
+    <string name="password">Passwort</string>
+    <string name="username">ATIS-Benutzername</string>
+    <string name="savePw">Password speichern</string>
+    <string name="title_activity_signin">Signin</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>
