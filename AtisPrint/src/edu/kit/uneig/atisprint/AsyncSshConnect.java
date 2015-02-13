@@ -22,6 +22,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     private final String filename = "AtisPrintCache.pdf";
     private final String createTestFile = "touch testFile.txt" + new Random().nextInt();
     private final String CMD_GET_PRINTERS = "lpstat -a";
+    private final String CMD_PRINT_FILE = "lp -d pool-sw1 "+filename;
 
     @Override
     protected String doInBackground(Object... params) {
@@ -36,7 +37,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         try {
             try {
                 copyFileOverSCP(user, password, hostname, port, fis);
-                ret = executeRemoteSSHCommand(user, password, hostname, port, CMD_GET_PRINTERS);
+                ret = executeRemoteSSHCommand(user, password, hostname, port, CMD_PRINT_FILE);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -102,7 +103,6 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channelssh.setOutputStream(baos);
 
         // Execute command
-//        channelssh.setCommand("lp -d pool-sw1 "+filename);
         channelssh.setCommand(command); //only here for testin'. real command above
         channelssh.connect();
         channelssh.disconnect();
