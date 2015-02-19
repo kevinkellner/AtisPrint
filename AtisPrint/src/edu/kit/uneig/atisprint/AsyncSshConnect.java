@@ -33,11 +33,12 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         String hostname = (String) params[2];
         int port = (int) params[3];
         InputStream fis = (InputStream) params[4];
+        String printer = (String) params[5];
         String ret = "";
         try {
             try {
                 copyFileOverSCP(user, password, hostname, port, fis);
-                ret = executeRemoteSSHCommand(user, password, hostname, port, CMD_PRINT_FILE);
+                ret = executeRemoteSSHCommand(user, password, hostname, port, "lp -d "+printer+" "+filename);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -100,6 +101,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         // SSH Channel
         ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream in = channelssh.getInputStream();
         channelssh.setOutputStream(baos);
 
         // Execute command

@@ -1,22 +1,14 @@
 package edu.kit.uneig.atisprint;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 public class PrintActivity extends Activity implements AsyncResponse {
@@ -33,6 +25,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
+        System.out.println("HI");
+        System.out.println("HIU");
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("application/pdf".equals(type)) {
@@ -72,12 +66,21 @@ public class PrintActivity extends Activity implements AsyncResponse {
                     InputStream in =  getContentResolver().openInputStream(receivedUri); 
                     String username = data.getStringExtra("username");
                     String password = data.getStringExtra("password");
+                    String printer = new HtmlParse().execute().get(); //some change
+                    System.out.println("hi");
+                    Toast.makeText(this, "Printing on "+printer, Toast.LENGTH_LONG).show();
                     
                     AsyncSshConnect ssh = new AsyncSshConnect();
                     ssh.delegate = this; // add reference for callback
-                    ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in);
+                    ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in, printer);
                     
-                }catch(FileNotFoundException e) {
+                } catch(FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
                 
@@ -105,4 +108,5 @@ public class PrintActivity extends Activity implements AsyncResponse {
         finish();
 
     }
+
 }

@@ -86,6 +86,11 @@ public class SigninActivity extends Activity {
         finish();
     }
     
+    private boolean isValidUsername(String username) {
+        String regex = "s_[a-zA-Z]*";
+        return username.matches(regex);
+    }
+    
     
     public String getUsername() {
         String username = settings.getString("username", NO_VALUE);
