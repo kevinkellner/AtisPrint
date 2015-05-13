@@ -10,13 +10,13 @@ import org.jsoup.select.Elements;
 
 import android.os.AsyncTask;
 
-public class HtmlParse  extends AsyncTask<Void, Void, String>{
+public class HtmlParse extends AsyncTask<Void, Void, String>{
 
     private Document pStatusPage;
     public AsyncResponse delegate = null;
 
-    public HtmlParse() throws IOException {
-        pStatusPage = Jsoup.connect("https://atis.informatik.kit.edu/1194.php").get();
+    public HtmlParse() {
+        
     }
 
     /**
@@ -25,8 +25,11 @@ public class HtmlParse  extends AsyncTask<Void, Void, String>{
      * 
      * @return Printer which should print the fastest. (Has the lowest elements in queue.) null if no such printer was
      *         found. (i.e ATIS is down, no printer there etc)
+     * @throws IOException 
      */
-    public String getBestPrinter() {
+    public String getBestPrinter() throws IOException {
+        pStatusPage = Jsoup.connect("https://atis.informatik.kit.edu/1194.php").get();        
+        
         int min = Integer.MAX_VALUE;
         String best = null;
         String regex = "<td>|<\\/td>";
@@ -80,7 +83,18 @@ public class HtmlParse  extends AsyncTask<Void, Void, String>{
 
     @Override
     protected String doInBackground(Void... params) {
-        return getBestPrinter();
+        try {
+            return getBestPrinter();
+        } catch (IOException e) {
+            return "pool-sw1";
+        }
+        
+    }
+    
+    @Override
+    protected void onPostExecute(String result) {
+        delegate.processFinish(result); // callback to activity that started
+                                        // this async task.
     }
 
 }
