@@ -14,8 +14,10 @@ import android.widget.Toast;
 public class PrintActivity extends Activity implements AsyncResponse {
     
     protected static int SIGN_IN_REQUEST = 0xFF;
+
     private String username;
     private String password;
+    private String printer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +27,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-        System.out.println("HI");
-        System.out.println("HIU");
-
+        
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("application/pdf".equals(type)) {
                 try {
@@ -52,12 +52,9 @@ public class PrintActivity extends Activity implements AsyncResponse {
         signIn.putExtra("mode", SigninActivity.GET_USERDATA);
         startActivityForResult(signIn, SIGN_IN_REQUEST);
         System.out.println("HandleASYNC");
-        
-        
-        
 
     }
-    
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SIGN_IN_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -66,8 +63,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
                     InputStream in =  getContentResolver().openInputStream(receivedUri); 
                     String username = data.getStringExtra("username");
                     String password = data.getStringExtra("password");
-                    String printer = new HtmlParse().execute().get(); //some change
-                    System.out.println("hi");
+                    String printer = "pool-sw1"; //TODO Read out printer from preferences or html.
+                    
                     Toast.makeText(this, "Printing on "+printer, Toast.LENGTH_LONG).show();
                     
                     AsyncSshConnect ssh = new AsyncSshConnect();
@@ -76,13 +73,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
                     
                 } catch(FileNotFoundException e) {
                     e.printStackTrace();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                } 
                 
                 
             } else if (resultCode == RESULT_CANCELED) {
@@ -103,9 +94,10 @@ public class PrintActivity extends Activity implements AsyncResponse {
 
     @Override
     public void processFinish(String output) {
-        Toast.makeText(this, output, Toast.LENGTH_LONG).show();
-        System.out.println(output);
-        finish();
+            Toast.makeText(this, output, Toast.LENGTH_LONG).show();
+            System.out.println(output);
+            finish();   
+        
 
     }
 
