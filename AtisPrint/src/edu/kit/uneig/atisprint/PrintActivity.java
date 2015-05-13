@@ -29,7 +29,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         String type = intent.getType();
         
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if ("application/pdf".equals(type)) {
+            if (type.equals("application/pdf")) {
                 try {
                  // Handle pdf being sent
                     handleAsyncSendPdf(intent);
@@ -43,16 +43,23 @@ public class PrintActivity extends Activity implements AsyncResponse {
         }
     }
 
-    public void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
+    /**
+     * This method receives an intent from the onCreate() method. The intent contains the PDF file that will be printed later on.
+     * This method then creates a new intent and launches the SigninActivity which will provide us with the user's credentials.
+     * @param intent Intent containing the pdf to be printed.
+     * @throws FileNotFoundException if the file is not found
+     */
+    private void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
+        //get the uri of the file
         final Uri receivedUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         
+        //create new intent 
         Intent signIn = new Intent(this, SigninActivity.class);
         signIn.putExtra(Intent.EXTRA_STREAM, receivedUri);
-                
-        signIn.putExtra("mode", SigninActivity.GET_USERDATA);
+        signIn.putExtra("mode", SigninActivity.GET_USERDATA); //we only want to get the user data
+        //TODO: Make two different classes? One for getting, one for setting user data?
+        
         startActivityForResult(signIn, SIGN_IN_REQUEST);
-        System.out.println("HandleASYNC");
-
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
