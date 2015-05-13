@@ -27,18 +27,20 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     @Override
     protected String doInBackground(Object... params) {
         // Don't try this at home. Seriously. It is THAT bad. Open for
-        // suggestions tho.
+        // suggestions though.
         String user = (String) params[0];
         String password = (String) params[1];
         String hostname = (String) params[2];
         int port = (int) params[3];
         InputStream fis = (InputStream) params[4];
         String printer = (String) params[5];
+        
         String ret = "";
         try {
             try {
                 copyFileOverSCP(user, password, hostname, port, fis);
                 ret = executeRemoteSSHCommand(user, password, hostname, port, "lp -d "+printer+" "+filename);
+//                ret = executeRemoteSSHCommand(user, password, hostname, port, createTestFile);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -55,8 +57,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        delegate.processFinish(result); // callback to activity that started
-                                        // this async task.
+        delegate.processFinish(result); // callback to activity that started this async task.
     }
 
     public void copyFileOverSCP(String username, String password,
@@ -105,7 +106,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         channelssh.setOutputStream(baos);
 
         // Execute command
-        channelssh.setCommand(command); //only here for testin'. real command above
+        channelssh.setCommand(command);
         channelssh.connect();
         channelssh.disconnect();
 
