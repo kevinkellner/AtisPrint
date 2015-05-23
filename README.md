@@ -11,6 +11,7 @@
 #TODO:
   - Implement menu to select which printer to print to. 
   - Add possibility to delete account
+  - Delete file after printing
   
 #Account safety:
   Your ATIS account is only used for authentication via ssh and scp.
