@@ -30,7 +30,7 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         String user = (String) params[0];
         String password = (String) params[1];
         String hostname = (String) params[2];
-        int port = (int) params[3];
+        int port = (Integer) params[3];
         InputStream fis = (InputStream) params[4];
         String printer = (String) params[5];
         //Bad code end. You made it.
