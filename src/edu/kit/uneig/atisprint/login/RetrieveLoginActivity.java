@@ -5,7 +5,7 @@ import android.os.Bundle;
 /**
  * Created by kelln_000 on 28.05.2015.
  */
-public class RetrieveUserActivity extends LoginActivity {
+public class RetrieveLoginActivity extends LoginActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,8 +14,8 @@ public class RetrieveUserActivity extends LoginActivity {
     }
 
     /**
-     * Tries to return the user data if it is stored. If the password or the username are not saved, the setUserData method will be called, which
-     * will in turn ask the user to enter his credentials.
+     * Tries to return the user data if it is stored. If the password or the username are not saved
+     * the result code {@code RESULT_CANCELED} will be returned.
      */
     private void returnUserData() {
         String username = getUsername();

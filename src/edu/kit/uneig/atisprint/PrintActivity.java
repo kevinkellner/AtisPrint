@@ -1,8 +1,5 @@
 package edu.kit.uneig.atisprint;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,9 +7,14 @@ import android.os.Bundle;
 import android.widget.Toast;
 import edu.kit.uneig.atisprint.login.SigninActivity;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class PrintActivity extends Activity implements AsyncResponse {
     
-    protected static int SIGN_IN_REQUEST = 0xFF;
+
+    protected static int LOGIN_DATA_REQUEST = 0x01;
+    protected static int SIGN_IN_REQUEST = 0x02;
 
     private String username;
     private String password;
