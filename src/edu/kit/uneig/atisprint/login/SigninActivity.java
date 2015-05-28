@@ -1,4 +1,4 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.login;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import edu.kit.uneig.atisprint.R;
 
 public class SigninActivity extends Activity {
     private static final String NO_VALUE = "-";

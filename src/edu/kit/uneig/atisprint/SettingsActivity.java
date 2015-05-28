@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import edu.kit.uneig.atisprint.login.SigninActivity;
 
 public class SettingsActivity extends Activity {
     

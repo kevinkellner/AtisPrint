@@ -1,4 +1,4 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.login;
 
 import android.app.Activity;
 

@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SigninActivity"
+            android:name=".login.SigninActivity"
             android:label="@string/title_activity_signin"
             android:theme="@android:style/Theme.Holo.Light.Dialog" >
         </activity>

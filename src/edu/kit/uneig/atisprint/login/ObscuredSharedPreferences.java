@@ -1,4 +1,4 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.login;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
