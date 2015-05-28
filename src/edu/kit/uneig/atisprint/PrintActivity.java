@@ -52,7 +52,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
     private void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
         //get the uri of the file
         final Uri receivedUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        
+
         //create new intent 
         Intent signIn = new Intent(this, SigninActivity.class);
         signIn.putExtra(Intent.EXTRA_STREAM, receivedUri);
