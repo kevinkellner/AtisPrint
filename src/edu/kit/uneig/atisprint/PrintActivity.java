@@ -16,6 +16,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
     protected static int LOGIN_DATA_REQUEST = 0x01;
     protected static int SIGN_IN_REQUEST = 0x02;
 
+    private Uri receivedUri;
+
     private String username;
     private String password;
     private String printer;
@@ -32,8 +34,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.equals("application/pdf")) {
                 try {
-                 // Handle pdf being sent
-                    handleAsyncSendPdf(intent);
+                    receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM); //save the uri of the file
+                    handleAsyncSendPdf(intent); // Handle pdf being sent
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -51,8 +53,6 @@ public class PrintActivity extends Activity implements AsyncResponse {
      * @throws FileNotFoundException if the file is not found
      */
     private void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
-        //get the uri of the file
-        final Uri receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
 
         //create new intent 
         Intent signIn = new Intent(this, SigninActivity.class);
@@ -67,8 +67,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         if (requestCode == SIGN_IN_REQUEST) {
             if (resultCode == RESULT_OK) {
                 try {
-                    final Uri receivedUri = data.getParcelableExtra(Intent.EXTRA_STREAM);
-                    InputStream in =  getContentResolver().openInputStream(receivedUri); 
+                    InputStream in =  getContentResolver().openInputStream(receivedUri);
                     String username = data.getStringExtra("username");
                     String password = data.getStringExtra("password");
                     String printer = "pool-sw1"; //TODO Read out printer from preferences or html.
