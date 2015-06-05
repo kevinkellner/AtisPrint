@@ -38,6 +38,7 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
+        <activity android:name="edu.kit.uneig.atisprint.login.RetrieveLoginActivity"></activity>
         <activity
             android:name="edu.kit.uneig.atisprint.login.SaveLoginActivity"
             android:label="@string/title_activity_signin"

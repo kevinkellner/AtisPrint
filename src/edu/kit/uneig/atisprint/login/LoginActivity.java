@@ -28,7 +28,6 @@ public abstract class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         returnIntent = new Intent();
-        returnIntent.putExtra(Intent.EXTRA_STREAM, getIntent().getParcelableExtra(Intent.EXTRA_STREAM)); //TODO remove this line
 
         //this will automatically encrypt the username and password with the ANDROID_ID when saving it
         settings = new ObscuredSharedPreferences(this, this.getPreferences(MODE_PRIVATE));

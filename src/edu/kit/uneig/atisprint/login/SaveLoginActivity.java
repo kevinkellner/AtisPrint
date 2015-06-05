@@ -51,9 +51,13 @@ public class SaveLoginActivity extends LoginActivity {
 
         //save username and password in preferences
         editor.putString("username", username);
-        if (savePw)  editor.putString("password", password);
+        if (savePw) {
+            editor.putString("password", password);
+        } else {
+            editor.remove("password");
+        }
 
-        editor.commit();
+        editor.apply();
 
         //return username and pw as result of the activity
         returnIntent.putExtra("username", username);
