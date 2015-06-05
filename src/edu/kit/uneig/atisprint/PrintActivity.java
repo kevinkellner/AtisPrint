@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
-import edu.kit.uneig.atisprint.login.SigninActivity;
+import edu.kit.uneig.atisprint.login.RetrieveLoginActivity;
+import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -35,7 +36,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
             if (type.equals("application/pdf")) {
                 try {
                     receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM); //save the uri of the file
-                    handleAsyncSendPdf(intent); // Handle pdf being sent
+                    handleAsyncSendPdf(); // Handle pdf being sent
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -49,15 +50,12 @@ public class PrintActivity extends Activity implements AsyncResponse {
     /**
      * This method receives an intent from the onCreate() method. The intent contains the PDF file that will be printed later on.
      * This method then creates a new intent and launches the SigninActivity which will provide us with the user's credentials.
-     * @param intent Intent containing the pdf to be printed.
      * @throws FileNotFoundException if the file is not found
      */
-    private void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
+    private void handleAsyncSendPdf() throws FileNotFoundException {
 
         //create new intent 
-        Intent signIn = new Intent(this, SigninActivity.class);
-        signIn.putExtra(Intent.EXTRA_STREAM, receivedUri);
-        signIn.putExtra("mode", SigninActivity.GET_USERDATA); //we only want to get the user data
+        Intent signIn = new Intent(this, RetrieveLoginActivity.class);
         //TODO: Make two different classes? One for getting, one for setting user data?
         
         startActivityForResult(signIn, SIGN_IN_REQUEST);
@@ -67,31 +65,38 @@ public class PrintActivity extends Activity implements AsyncResponse {
         if (requestCode == SIGN_IN_REQUEST) {
             if (resultCode == RESULT_OK) {
                 try {
-                    InputStream in =  getContentResolver().openInputStream(receivedUri);
-                    String username = data.getStringExtra("username");
-                    String password = data.getStringExtra("password");
-                    String printer = "pool-sw1"; //TODO Read out printer from preferences or html.
-                    
-                    Toast.makeText(this, "Printing on "+printer, Toast.LENGTH_LONG).show();
-                    
-                    AsyncSshConnect ssh = new AsyncSshConnect();
-                    ssh.delegate = this; // add reference for callback
-                    ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in, printer);
-                    
+                    startPrintJob(data);
                 } catch(FileNotFoundException e) {
                     e.printStackTrace();
-                } 
-                
-                
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
-                
             }
         } else if (requestCode == LOGIN_DATA_REQUEST) {
             if (resultCode == RESULT_OK) {
-
+                try {
+                    startPrintJob(data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Intent signInPrompt = new Intent(this, SaveLoginActivity.class);
+                startActivityForResult(signInPrompt, SIGN_IN_REQUEST);
             }
         }
+    }
+
+    private void startPrintJob(Intent data) throws FileNotFoundException {
+        InputStream in =  getContentResolver().openInputStream(receivedUri);
+        String username = data.getStringExtra("username");
+        String password = data.getStringExtra("password");
+        String printer = "pool-sw1"; //TODO Read out printer from preferences or html.
+
+        Toast.makeText(this, "Printing on " + printer, Toast.LENGTH_LONG).show();
+
+        AsyncSshConnect ssh = new AsyncSshConnect();
+        ssh.delegate = this; // add reference for callback
+        ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in, printer);
     }
 
     

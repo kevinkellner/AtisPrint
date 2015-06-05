@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import edu.kit.uneig.atisprint.login.SigninActivity;
+import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 public class SettingsActivity extends Activity {
     
@@ -19,8 +19,7 @@ public class SettingsActivity extends Activity {
     }
     
     public void onClickPrint(View v) {
-        Intent intent = new Intent(this, SigninActivity.class);
-        intent.putExtra("mode", SigninActivity.SET_USERDATA);
+        Intent intent = new Intent(this, SaveLoginActivity.class);
         startActivityForResult(intent, SIGN_IN_REQUEST);
     }
 
