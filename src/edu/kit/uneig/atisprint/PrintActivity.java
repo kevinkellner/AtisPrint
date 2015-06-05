@@ -52,7 +52,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
      */
     private void handleAsyncSendPdf(Intent intent) throws FileNotFoundException {
         //get the uri of the file
-        final Uri receivedUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        final Uri receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
 
         //create new intent 
         Intent signIn = new Intent(this, SigninActivity.class);
@@ -67,7 +67,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         if (requestCode == SIGN_IN_REQUEST) {
             if (resultCode == RESULT_OK) {
                 try {
-                    final Uri receivedUri = (Uri) data.getParcelableExtra(Intent.EXTRA_STREAM);
+                    final Uri receivedUri = data.getParcelableExtra(Intent.EXTRA_STREAM);
                     InputStream in =  getContentResolver().openInputStream(receivedUri); 
                     String username = data.getStringExtra("username");
                     String password = data.getStringExtra("password");
@@ -87,6 +87,10 @@ public class PrintActivity extends Activity implements AsyncResponse {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
                 
+            }
+        } else if (requestCode == LOGIN_DATA_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
             }
         }
     }
