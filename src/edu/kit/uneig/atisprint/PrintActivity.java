@@ -58,7 +58,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         Intent signIn = new Intent(this, RetrieveLoginActivity.class);
         //TODO: Make two different classes? One for getting, one for setting user data?
         
-        startActivityForResult(signIn, SIGN_IN_REQUEST);
+        startActivityForResult(signIn, LOGIN_DATA_REQUEST);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

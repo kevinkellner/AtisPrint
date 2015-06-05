@@ -1,26 +1,18 @@
 package edu.kit.uneig.atisprint;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.Random;
-
 import android.os.AsyncTask;
-import android.widget.Toast;
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
     public AsyncResponse delegate = null;
+
     private final String filename = "AtisPrintCache.pdf";
-    private final String createTestFile = "touch testFile.txt" + new Random().nextInt();
+    private final String createTestFile = "touch testFile" + System.currentTimeMillis() + ".txt";
     private final String CMD_GET_PRINTERS = "lpstat -a";
     private final String CMD_PRINT_FILE = "lp -d pool-sw1 "+filename;
 
@@ -34,19 +26,23 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         InputStream fis = (InputStream) params[4];
         String printer = (String) params[5];
         //Bad code end. You made it.
+
+        SSHSession ssh = new SSHSession(user, password, hostname, port);
         
         String ret = "";
         try {
-            try {
-                copyFileOverSCP(user, password, hostname, port, fis);
-                ret = executeRemoteSSHCommand(user, password, hostname, port, "lp -d "+printer+" "+filename);
+                ssh.copy(filename, fis);
+//                ret = ssh.execute("lp -d " + printer + " " + filename);
+                ret = ssh.execute(createTestFile);
                 fis.close();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
-            }
-
-        } catch (Exception e) {
+            } catch (SftpException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSchException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -54,62 +50,15 @@ public class AsyncSshConnect extends AsyncTask<Object, Void, String> {
         return ret;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
     @Override
     protected void onPostExecute(String result) {
         delegate.processFinish(result); // callback to activity that started this async task.
     }
 
-    public void copyFileOverSCP(String username, String password,
-            String hostname, int port, InputStream file) throws JSchException,
-            FileNotFoundException, SftpException, InterruptedException {
-        JSch jsch = new JSch();
-        Session session = null;
-        session = jsch.getSession(username, hostname, 22);
-        session.setPassword(password);
-        Properties prop = new Properties();
-        prop.put("StrictHostKeyChecking", "no");
-        session.setConfig(prop);
-        session.connect();
 
-        ChannelSftp channel = null;
-        channel = (ChannelSftp) session.openChannel("sftp");
-        channel.connect();
-        // If you want you can change the directory using the following line.
-        // channel.cd(RemoteDirectoryPath)
-        channel.put(file, filename);
-
-        
-        channel.disconnect();
-        session.disconnect();
-
-    }
-    
-
-    public String executeRemoteSSHCommand(String user, String password,
-            String hostname, int port, String command) throws Exception {
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(user, hostname, port);
-        session.setPassword(password);
-
-        // Avoid asking for key confirmation
-        Properties prop = new Properties();
-        prop.put("StrictHostKeyChecking", "no");
-        session.setConfig(prop);
-
-        session.connect();
-
-        // SSH Channel
-        ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream in = channelssh.getInputStream();
-        channelssh.setOutputStream(baos);
-
-        // Execute command
-        channelssh.setCommand(command);
-        channelssh.connect();
-        channelssh.disconnect();
-
-        return baos.toString();
-    }
 
 }
