@@ -1,6 +1,7 @@
 package edu.kit.uneig.atisprint.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public abstract class LoginActivity extends Activity {
      * will be used to encrypt everything that will be saved there with the ANDROID_ID
      */
     protected SharedPreferences settings;
+    protected SharedPreferences prefs;
     /**
      * The username and password will be saved in this intent.
      */
@@ -30,7 +32,8 @@ public abstract class LoginActivity extends Activity {
         returnIntent = new Intent();
 
         //this will automatically encrypt the username and password with the ANDROID_ID when saving it
-        settings = new ObscuredSharedPreferences(this, this.getPreferences(MODE_PRIVATE));
+        settings = ObscuredSharedPreferences.getPrefs(getApplicationContext(), "AtisPrint", Context.MODE_PRIVATE);
+        prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
     }
 
     /**

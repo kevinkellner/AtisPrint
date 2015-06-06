@@ -1,7 +1,9 @@
 package edu.kit.uneig.atisprint;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,25 +11,53 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import edu.kit.uneig.atisprint.login.ObscuredSharedPreferences;
 import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SettingsActivity extends Activity {
 
     protected static int SIGN_IN_REQUEST = 0xFF;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-//        ArrayList<String> list = new ArrayList<String>();
-//        list.add("Change log in data");
-//        list.add("Select printer");
-//
-//        ListAdapter listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
-//        ListView listView = (ListView) findViewById(R.id.listView);
-//        listView.setAdapter(listAdapter);
+
+        final String[] titles = new String[] {"Change user", "Select printer"};
+        final String[] subtitles = new String[] {getUsername(), getPrinter()};
+
+        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        for (int i = 0; i < titles.length; i++) {
+            Map<String, String> datum = new HashMap<String, String>(2);
+            datum.put("title", titles[i]);
+            datum.put("subtitle", subtitles[i]);
+            data.add(datum);
+        }
+
+        SimpleAdapter mAdapter = new SimpleAdapter(this, data,
+                                                    android.R.layout.simple_list_item_2,
+                                                    new String[]{"title", "subtitle"},
+                                                    new int[]{android.R.id.text1, android.R.id.text2});
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(mAdapter);
+    }
+
+    private String getUsername() {
+        ObscuredSharedPreferences prefs = ObscuredSharedPreferences.getPrefs(getApplicationContext(),
+                                                                            "AtisPrint", Context.MODE_PRIVATE);
+        return prefs.getString("username", "No User saved");
+    }
+
+    private String getPrinter() {
+        return "PrinterTODO";
     }
 
     public void onClickPrint(View v) {
