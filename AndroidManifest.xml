@@ -38,11 +38,11 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
-        <activity android:name="edu.kit.uneig.atisprint.login.RetrieveLoginActivity"></activity>
+        <activity android:name=".login.RetrieveLoginActivity"/>
         <activity
-            android:name="edu.kit.uneig.atisprint.login.SaveLoginActivity"
+            android:name=".login.SaveLoginActivity"
             android:label="@string/title_activity_signin"
-            android:theme="@android:style/Theme.Holo.Light.Dialog" >
+            android:theme="@style/DialogTheme" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -53,11 +53,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".login.SignInActivity"
-            android:label="@string/title_activity_sign_in"
-            android:theme="@android:style/Theme.Holo.Light.Dialog">
         </activity>
     </application>
 
