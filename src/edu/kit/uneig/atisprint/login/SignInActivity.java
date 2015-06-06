@@ -1,15 +1,15 @@
 package edu.kit.uneig.atisprint.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import edu.kit.uneig.atisprint.R;
 
-public class SignInActivity extends ActionBarActivity {
+public class SignInActivity extends Activity {
 
     /**
      * This is the value that will be returned by the SharedPreferences if a username or password is not saved yet.

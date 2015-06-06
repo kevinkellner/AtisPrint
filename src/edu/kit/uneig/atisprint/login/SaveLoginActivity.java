@@ -24,7 +24,7 @@ public class SaveLoginActivity extends LoginActivity {
 
 
     private void setUserData() {
-        setContentView(R.layout.activity_signin);
+        setContentView(R.layout.activity_sign_in);
         tfUsername = (EditText) findViewById(R.id.tfUsername);
         tfPassword = (EditText) findViewById(R.id.tfPassword);
         chkSavePw = (CheckBox) findViewById(R.id.chkSavePw);
@@ -64,6 +64,11 @@ public class SaveLoginActivity extends LoginActivity {
         returnIntent.putExtra("password", password);
 
         setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    public void onClickCancel(View view) {
+        setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
 
