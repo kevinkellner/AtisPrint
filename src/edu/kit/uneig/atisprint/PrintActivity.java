@@ -62,17 +62,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SIGN_IN_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    startPrintJob(data);
-                } catch(FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
-            }
-        } else if (requestCode == LOGIN_DATA_REQUEST) {
+        if (requestCode == LOGIN_DATA_REQUEST) {
             if (resultCode == RESULT_OK) {
                 try {
                     startPrintJob(data);
@@ -82,6 +72,16 @@ public class PrintActivity extends Activity implements AsyncResponse {
             } else if (resultCode == RESULT_CANCELED) {
                 Intent signInPrompt = new Intent(this, SaveLoginActivity.class);
                 startActivityForResult(signInPrompt, SIGN_IN_REQUEST);
+            }
+        } else if (requestCode == SIGN_IN_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    startPrintJob(data);
+                } catch(FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
             }
         }
     }
