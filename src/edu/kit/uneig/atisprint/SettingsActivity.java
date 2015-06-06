@@ -11,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import edu.kit.uneig.atisprint.login.LoginPromptActivity;
 import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 
@@ -25,6 +27,7 @@ public class SettingsActivity extends Activity {
 
     private final int changeUser = 0;
     private final int selectPrinter = 1;
+    private final int setDir = 2;
 
     final CharSequence printers[] = new CharSequence[] {"pool-sw1", "pool-sw2", "pool-sw3", "pool-farb1"};
 
@@ -43,8 +46,8 @@ public class SettingsActivity extends Activity {
      */
     private void initializeListView() {
         //titles contains all the items in the ListView, subtitles are their subitems
-        final String[] titles = new String[] {"Change user", "Select printer"};
-        final String[] subtitles = new String[] {getUsername(), getPrinter()};
+        final String[] titles = new String[] {"Change user", "Select printer", "Set directory"};
+        final String[] subtitles = new String[] {getUsername(), getPrinter(), getDirectory()};
 
         List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
@@ -83,6 +86,7 @@ public class SettingsActivity extends Activity {
         return prefs.getString("printer", printers[0].toString());
     }
 
+
     /**
      * Sets the printer to the specified printer and updates the listView afterwards.
      * The id corresponds to the index in the printers array.
@@ -92,6 +96,20 @@ public class SettingsActivity extends Activity {
         if (id < printers.length) {
             prefs.setString("printer", printers[id].toString());
             initializeListView();
+        }
+    }
+
+    private String getDirectory() {
+        return prefs.getString("dir", "AtisPrint");
+    }
+
+    private void setDirectory(String dir) {
+        String regEx = "([a-zA-Z]/?)+([a-zA-Z]+)?/?";
+        if (dir.matches(regEx)) {
+            prefs.setString("dir", dir);
+            initializeListView();
+        } else {
+            Toast.makeText(this, "The directory is invalid", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -136,7 +154,35 @@ public class SettingsActivity extends Activity {
                     break;
                 case selectPrinter:
                     showPrinterSelection();
+                    break;
+                case setDir:
+                    showDirectoryInput();
+                    break;
             }
+        }
+
+        private void showDirectoryInput() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle("Set the directory");
+            final EditText input = new EditText(SettingsActivity.this);
+            input.setText(getDirectory());
+            builder.setView(input);
+            builder.setNegativeButton("Cancel", null);
+
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    setDirectory(input.getText().toString());
+                }
+            });
+
+            builder.setNeutralButton("Reset to default", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    setDirectory("AtisPrint");
+                }
+            });
+            builder.show();
         }
 
         /**
