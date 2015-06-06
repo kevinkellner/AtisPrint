@@ -1,7 +1,7 @@
 # AtisPrint
   Android application for printing to ATIS printers on the KIT Campus in Karlsruhe, Germany.
 
-  You can find the latest apk in the root of this repo.
+  You can find the latest apk in the root of this repo or here https://github.com/kevinkellner/AtisPrint/raw/master/AtisPrint.apk
 
 #State of the project
   At the moment you can print via intents. Just open a .pdf file (for example with the built-in Google PDF viewer) and select     
