@@ -13,21 +13,27 @@ repositories {
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'atisprint'
+            keyPassword '123456'
+            storeFile file('C:/Users/kelln_000/Dropbox/Privates/keystore')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
-
     lintOptions {
         abortOnError false
     }
-
     defaultConfig {
         applicationId "edu.kit.uneig"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
+        signingConfig signingConfigs.config
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
@@ -38,7 +44,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -53,15 +58,15 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+    productFlavors {
+    }
 }
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.jcraft:jsch:0.1.52'
     compile 'org.jsoup:jsoup:1.7.2'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:21.0.3'
-
-
 }
