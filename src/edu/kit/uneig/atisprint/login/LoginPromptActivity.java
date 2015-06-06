@@ -10,7 +10,7 @@ import edu.kit.uneig.atisprint.R;
 /**
  * Created by kelln_000 on 28.05.2015.
  */
-public class SaveLoginActivity extends LoginActivity {
+public class LoginPromptActivity extends LoginActivity {
 
     private EditText tfUsername;
     private EditText tfPassword;

@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import edu.kit.uneig.atisprint.login.SaveLoginActivity;
+import edu.kit.uneig.atisprint.login.LoginPromptActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +132,7 @@ public class SettingsActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch (position) {
                 case changeUser:
-                    Intent signIn = new Intent(getBaseContext(), SaveLoginActivity.class);
+                    Intent signIn = new Intent(getBaseContext(), LoginPromptActivity.class);
                     startActivityForResult(signIn, changeUser);
                     break;
                 case selectPrinter:

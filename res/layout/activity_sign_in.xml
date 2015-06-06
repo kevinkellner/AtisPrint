@@ -4,7 +4,7 @@
               android:layout_width="250dp"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              tools:context=".login.SignInActivity" >
+              tools:context=".login.LoginPromptActivity" >
 
     <EditText
             android:id="@+id/tfUsername"

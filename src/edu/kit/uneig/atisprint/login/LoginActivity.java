@@ -36,6 +36,10 @@ public abstract class LoginActivity extends Activity {
         prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
     }
 
+    public String getString(String key) {
+        return prefs.getString(key, NO_VALUE);
+    }
+
     /**
      * Retrieves the user name saved in the preferences, returns NO_VALUE if the user name is not stored.
      *

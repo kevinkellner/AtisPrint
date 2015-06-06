@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 import edu.kit.uneig.atisprint.login.RetrieveLoginActivity;
-import edu.kit.uneig.atisprint.login.SaveLoginActivity;
+import edu.kit.uneig.atisprint.login.LoginPromptActivity;
 
 import java.io.FileNotFoundException;
 
@@ -71,7 +71,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
                     e.printStackTrace();
                 }
             } else if (resultCode == RESULT_CANCELED) {
-                Intent signInPrompt = new Intent(this, SaveLoginActivity.class);
+                Intent signInPrompt = new Intent(this, LoginPromptActivity.class);
                 startActivityForResult(signInPrompt, SIGN_IN_REQUEST);
             }
         } else if (requestCode == SIGN_IN_REQUEST) {
