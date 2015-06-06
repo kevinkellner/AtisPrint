@@ -9,7 +9,6 @@ import edu.kit.uneig.atisprint.login.RetrieveLoginActivity;
 import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 public class PrintActivity extends Activity implements AsyncResponse {
     
@@ -49,7 +48,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
 
     /**
      * This method receives an intent from the onCreate() method. The intent contains the PDF file that will be printed later on.
-     * This method then creates a new intent and launches the SigninActivity which will provide us with the user's credentials.
+     * This method then creates a new intent and launches the SignInActivity which will provide us with the user's credentials.
      * @throws FileNotFoundException if the file is not found
      */
     private void handleAsyncSendPdf() throws FileNotFoundException {
@@ -87,16 +86,20 @@ public class PrintActivity extends Activity implements AsyncResponse {
     }
 
     private void startPrintJob(Intent data) throws FileNotFoundException {
-        InputStream in =  getContentResolver().openInputStream(receivedUri);
-        String username = data.getStringExtra("username");
-        String password = data.getStringExtra("password");
-        String printer = "pool-sw1"; //TODO Read out printer from preferences or html.
+        PrintJob printJob = new PrintJob();
 
-        Toast.makeText(this, "Printing on " + printer, Toast.LENGTH_LONG).show();
+        printJob.setFile(getContentResolver().openInputStream(receivedUri));
+        printJob.setUsername(data.getStringExtra("username"));
+        printJob.setPassword(data.getStringExtra("password"));
+        printJob.setPrinter("pool-sw1"); //TODO Read out printer from preferences or html.
+        printJob.setHostname("i08fs1.ira.uka.de");
+        printJob.setPort(22);
+
+        Toast.makeText(this, "Printing on " + printJob.getPrinter(), Toast.LENGTH_LONG).show();
 
         AsyncSshConnect ssh = new AsyncSshConnect();
         ssh.delegate = this; // add reference for callback
-        ssh.execute(username, password, "i08fs1.ira.uka.de", 22, in, printer);
+        ssh.execute(printJob);
     }
 
     

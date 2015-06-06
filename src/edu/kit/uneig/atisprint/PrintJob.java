@@ -1,10 +1,10 @@
 package edu.kit.uneig.atisprint;
 
-import android.net.Uri;
+import java.io.InputStream;
 
 public class PrintJob {
     
-    private Uri file;
+    private InputStream file;
     private String username;
     private String password;
     private String hostname;
@@ -18,15 +18,15 @@ public class PrintJob {
     /**
      * @return the file
      */
-    public Uri getFile() {
+    public InputStream getFile() {
         return file;
     }
 
     /**
      * @param file the file to set
      */
-    public void setFile(Uri file) {
-        this.file = file;
+    public void setFile(InputStream is) {
+        this.file = is;
     }
 
     /**
