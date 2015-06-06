@@ -13,5 +13,9 @@
     <string name="setUserData">Login speichern</string>
     <string name="print_name">Atis Druck</string>
     <string name="title_activity_sign_in">Log in</string>
+    <string-array name="settings_list">
+        <item>User</item>
+        <item>Printer</item>
+    </string-array>
 
 </resources>

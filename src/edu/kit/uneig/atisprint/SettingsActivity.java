@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import edu.kit.uneig.atisprint.login.SaveLoginActivity;
+
+import java.util.ArrayList;
 
 public class SettingsActivity extends Activity {
 
@@ -16,6 +21,13 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+//        ArrayList<String> list = new ArrayList<String>();
+//        list.add("Change log in data");
+//        list.add("Select printer");
+//
+//        ListAdapter listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+//        ListView listView = (ListView) findViewById(R.id.listView);
+//        listView.setAdapter(listAdapter);
     }
 
     public void onClickPrint(View v) {
