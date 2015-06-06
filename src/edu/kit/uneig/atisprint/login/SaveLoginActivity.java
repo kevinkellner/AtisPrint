@@ -48,16 +48,19 @@ public class SaveLoginActivity extends LoginActivity {
         String username = tfUsername.getText().toString();
         boolean savePw = chkSavePw.isChecked();
 
-        SharedPreferences.Editor editor = settings.edit();
+        SharedPreferences.Editor editor = prefs.edit();
 
-        //save username and password in preferences
+        //save username in plaintext
         editor.putString("username", username);
+        editor.apply();
+
+        //use ObscuredSharedPreferences to encrypt password
+        editor = settings.edit();
         if (savePw) {
             editor.putString("password", password);
         } else {
             editor.remove("password");
         }
-
         editor.apply();
 
         //return username and pw as result of the activity

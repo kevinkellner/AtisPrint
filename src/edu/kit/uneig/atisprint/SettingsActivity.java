@@ -51,8 +51,7 @@ public class SettingsActivity extends Activity {
     }
 
     private String getUsername() {
-        ObscuredSharedPreferences prefs = ObscuredSharedPreferences.getPrefs(getApplicationContext(),
-                                                                            "AtisPrint", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
         return prefs.getString("username", "No User saved");
     }
 
