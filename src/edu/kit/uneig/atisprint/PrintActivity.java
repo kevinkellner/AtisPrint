@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
-import edu.kit.uneig.atisprint.login.RetrieveLoginActivity;
+import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 import edu.kit.uneig.atisprint.login.LoginPromptActivity;
 
 import java.io.FileNotFoundException;
@@ -13,18 +13,17 @@ import java.io.FileNotFoundException;
 public class PrintActivity extends Activity implements AsyncResponse {
 
 
-    protected static int LOGIN_DATA_REQUEST = 0x01;
-    protected static int SIGN_IN_REQUEST = 0x02;
+    protected static int SIGN_IN_PROMPT = 0x02;
 
     private Uri receivedUri;
+    private PreferencesWrapper pref;
 
-    private String username;
-    private String password;
-    private String printer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pref = new PreferencesWrapper(this);
 
         // Get intent, action and MIME type
         Intent intent = getIntent();
@@ -53,28 +52,24 @@ public class PrintActivity extends Activity implements AsyncResponse {
      * @throws FileNotFoundException if the file is not found
      */
     private void handleAsyncSendPdf() throws FileNotFoundException {
+        String username = pref.getString("username", "--");
+        String password = pref.getStringSecure("password", "--");
 
-        //create new intent 
-        Intent signIn = new Intent(this, RetrieveLoginActivity.class);
-        //TODO: Make two different classes? One for getting, one for setting user data?
+        if (username.equals("--") || password.equals("--")) {
+            Intent prompt = new Intent(this, LoginPromptActivity.class);
+            startActivityForResult(prompt, SIGN_IN_PROMPT);
+        } else {
+            Intent data = new Intent("JustPassingData");
+            data.putExtra("username", username);
+            data.putExtra("password", password);
+            startPrintJob(data);
+        }
 
-        startActivityForResult(signIn, LOGIN_DATA_REQUEST);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOGIN_DATA_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    startPrintJob(data);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                Intent signInPrompt = new Intent(this, LoginPromptActivity.class);
-                startActivityForResult(signInPrompt, SIGN_IN_REQUEST);
-            }
-        } else if (requestCode == SIGN_IN_REQUEST) {
+         if (requestCode == SIGN_IN_PROMPT) {
             if (resultCode == RESULT_OK) {
                 try {
                     startPrintJob(data);
@@ -93,7 +88,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         printJob.setFile(getContentResolver().openInputStream(receivedUri));
         printJob.setUsername(data.getStringExtra("username"));
         printJob.setPassword(data.getStringExtra("password"));
-        printJob.setPrinter("pool-sw1"); //TODO Read out printer from preferences or html.
+        printJob.setPrinter(pref.getString("printer", "pool-sw1")); //TODO Read out printer from preferences or html.
         printJob.setHostname("i08fs1.ira.uka.de");
         printJob.setPort(22);
 
@@ -102,15 +97,6 @@ public class PrintActivity extends Activity implements AsyncResponse {
         AsyncSshConnect ssh = new AsyncSshConnect();
         ssh.delegate = this; // add reference for callback
         ssh.execute(printJob);
-    }
-
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override

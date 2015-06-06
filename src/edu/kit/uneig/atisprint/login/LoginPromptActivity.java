@@ -1,6 +1,7 @@
 package edu.kit.uneig.atisprint.login;
 
-import android.content.SharedPreferences;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -8,17 +9,34 @@ import android.widget.EditText;
 import edu.kit.uneig.atisprint.R;
 
 /**
- * Created by kelln_000 on 28.05.2015.
+ * @author Kevin Kellner
+ * @version 1.0
  */
-public class LoginPromptActivity extends LoginActivity {
+public class LoginPromptActivity extends Activity {
 
+    /**
+     * The username and password will be saved in this intent.
+     */
+    protected Intent returnIntent;
+
+    /**
+     * This is the value that will be returned by the SharedPreferences if a username or password is not saved yet.
+     */
+    protected static final String NO_VALUE = "-";
+    /**
+     * This class will be used to access the database of this application.
+     */
+    private PreferencesWrapper prefs;
     private EditText tfUsername;
     private EditText tfPassword;
     private CheckBox chkSavePw;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        returnIntent = new Intent();
+        prefs = new PreferencesWrapper(this);
         setUserData();
     }
 
@@ -29,12 +47,13 @@ public class LoginPromptActivity extends LoginActivity {
         tfPassword = (EditText) findViewById(R.id.tfPassword);
         chkSavePw = (CheckBox) findViewById(R.id.chkSavePw);
 
-        String username = getUsername();
-        String password = getPassword();
+        String username = prefs.getString("username", NO_VALUE);
+        String password = prefs.getStringSecure("password", NO_VALUE);
 
         //check if there is already a saved username and/or password and set them into the text fields.
         if (!username.equals(NO_VALUE)) tfUsername.setText(username);
         if (!password.equals(NO_VALUE)) tfPassword.setText(password);
+        chkSavePw.setChecked(prefs.getBoolean("savePw", false));
     }
 
     /**
@@ -48,20 +67,15 @@ public class LoginPromptActivity extends LoginActivity {
         String username = tfUsername.getText().toString();
         boolean savePw = chkSavePw.isChecked();
 
-        SharedPreferences.Editor editor = prefs.edit();
-
         //save username in plaintext
-        editor.putString("username", username);
-        editor.apply();
-
+        prefs.setString("username", username);
+        prefs.setBoolean("savePw", savePw);
         //use ObscuredSharedPreferences to encrypt password
-        editor = settings.edit();
         if (savePw) {
-            editor.putString("password", password);
+            prefs.setStringSecure("password", password);
         } else {
-            editor.remove("password");
+            prefs.remove("password");
         }
-        editor.apply();
 
         //return username and pw as result of the activity
         returnIntent.putExtra("username", username);
@@ -75,6 +89,7 @@ public class LoginPromptActivity extends LoginActivity {
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
+
 
     /**
      * Checks whether a certain user name is valid by matching it with the criteria of the ATIS account creation

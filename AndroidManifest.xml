@@ -38,7 +38,6 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.RetrieveLoginActivity"/>
         <activity
             android:name=".login.LoginPromptActivity"
             android:label="@string/title_activity_signin"

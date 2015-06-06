@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import edu.kit.uneig.atisprint.login.LoginPromptActivity;
+import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,15 +26,15 @@ public class SettingsActivity extends Activity {
     private final int changeUser = 0;
     private final int selectPrinter = 1;
 
-    final CharSequence printers[] = new CharSequence[] {"pool-sw1-raw", "pool-sw2-raw", "pool-sw3-raw", "pool-farb1-raw"};
+    final CharSequence printers[] = new CharSequence[] {"pool-sw1", "pool-sw2", "pool-sw3", "pool-farb1"};
 
-    private SharedPreferences prefs;
+    private PreferencesWrapper prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
+        prefs = new PreferencesWrapper(this);
         initializeListView();
     }
 
@@ -89,9 +90,7 @@ public class SettingsActivity extends Activity {
      */
     private void setPrinter(int id) {
         if (id < printers.length) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("printer", printers[id].toString());
-            editor.apply();
+            prefs.setString("printer", printers[id].toString());
             initializeListView();
         }
     }
