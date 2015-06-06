@@ -30,15 +30,10 @@ public class PrintActivity extends Activity implements AsyncResponse {
         String action = intent.getAction();
         String type = intent.getType();
 
+
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.equals("application/pdf")) {
-                try {
-                    receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM); //save the uri of the file
-                    handleAsyncSendPdf(); // Handle pdf being sent
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                handleSendPdf(intent);
             }
         } else {
             setContentView(R.layout.activity_print);
@@ -48,10 +43,9 @@ public class PrintActivity extends Activity implements AsyncResponse {
     /**
      * This method receives an intent from the onCreate() method. The intent contains the PDF file that will be printed later on.
      * This method then creates a new intent and launches the SignInActivity which will provide us with the user's credentials.
-     *
-     * @throws FileNotFoundException if the file is not found
      */
-    private void handleAsyncSendPdf() throws FileNotFoundException {
+    private void handleSendPdf(Intent intent) {
+        receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM); //save the uri of the file
         String username = pref.getString("username", "--");
         String password = pref.getStringSecure("password", "--");
 
@@ -71,32 +65,35 @@ public class PrintActivity extends Activity implements AsyncResponse {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
          if (requestCode == SIGN_IN_PROMPT) {
             if (resultCode == RESULT_OK) {
-                try {
-                    startPrintJob(data);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                startPrintJob(data);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Please Log In to print document", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void startPrintJob(Intent data) throws FileNotFoundException {
+    private void startPrintJob(Intent data) {
         PrintJob printJob = new PrintJob();
+        try {
+            String uri = receivedUri.toString();
+            printJob.setFile(getContentResolver().openInputStream(receivedUri));
+            printJob.setFilename(uri.substring(uri.lastIndexOf("/") + 1));
+            printJob.setUsername(data.getStringExtra("username"));
+            printJob.setPassword(data.getStringExtra("password"));
+            printJob.setPrinter(pref.getString("printer", "pool-sw1"));
+            printJob.setHostname("i08fs1.ira.uka.de");
+            printJob.setPort(22);
+            printJob.setDirectory(pref.getString("dir", "AtisPrint"));
 
-        printJob.setFile(getContentResolver().openInputStream(receivedUri));
-        printJob.setUsername(data.getStringExtra("username"));
-        printJob.setPassword(data.getStringExtra("password"));
-        printJob.setPrinter(pref.getString("printer", "pool-sw1")); //TODO Read out printer from preferences or html.
-        printJob.setHostname("i08fs1.ira.uka.de");
-        printJob.setPort(22);
+            Toast.makeText(this, "Printing " + printJob.getFilename() + " on " + printJob.getPrinter(), Toast.LENGTH_LONG).show();
 
-        Toast.makeText(this, "Printing on " + printJob.getPrinter(), Toast.LENGTH_LONG).show();
+            AsyncSshConnect ssh = new AsyncSshConnect();
+            ssh.delegate = this; // add reference for callback
+            ssh.execute(printJob);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        AsyncSshConnect ssh = new AsyncSshConnect();
-        ssh.delegate = this; // add reference for callback
-        ssh.execute(printJob);
     }
 
     @Override

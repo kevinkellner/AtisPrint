@@ -4,12 +4,16 @@ import java.io.InputStream;
 
 public class PrintJob {
 
+    private int port;
     private InputStream file;
     private String username;
     private String password;
     private String hostname;
-    private int port;
     private String printer;
+    private String filename;
+
+
+    private String directory;
 
     public PrintJob() {
         // TODO Auto-generated constructor stub
@@ -98,6 +102,19 @@ public class PrintJob {
     public void setPrinter(String printer) {
         this.printer = printer;
     }
+    public String getFilename() {
+        return filename;
+    }
 
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
+    public String getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
 }

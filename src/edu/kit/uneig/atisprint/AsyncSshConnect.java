@@ -3,6 +3,8 @@ package edu.kit.uneig.atisprint;
 import android.os.AsyncTask;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import edu.kit.uneig.atisprint.login.LoginPromptActivity;
+import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,10 +13,9 @@ import java.io.InputStream;
 public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
     public AsyncResponse delegate = null;
 
-    private final String filename = "AtisPrintCache.pdf";
     private final String createTestFile = "touch testFile" + System.currentTimeMillis() + ".txt";
-    private final String CMD_GET_PRINTERS = "lpstat -a";
-    private final String CMD_PRINT_FILE = "lp -d pool-sw1 " + filename;
+//    private final String CMD_GET_PRINTERS = "lpstat -a";
+//    private final String CMD_PRINT_FILE = "lp -d pool-sw1 " + getFilename();
 
     @Override
     protected String doInBackground(PrintJob... params) {
@@ -24,12 +25,13 @@ public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
         int port = params[0].getPort();
         InputStream fis = params[0].getFile();
         String printer = params[0].getPrinter(); //TODO make it possible to print more than one file(?)
-
+        String filename = params[0].getFilename();
+        String dir = params[0].getDirectory();
         SSHSession ssh = new SSHSession(user, password, hostname, port);
 
         String ret = "";
         try {
-            ssh.copy(filename, fis);
+            ssh.copy(dir, filename, fis);
 //                ret = ssh.execute("lp -d " + printer + " " + filename);
             ret = ssh.execute(createTestFile);
             fis.close();
@@ -46,10 +48,6 @@ public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
         }
 
         return ret;
-    }
-
-    public String getFilename() {
-        return filename;
     }
 
     @Override

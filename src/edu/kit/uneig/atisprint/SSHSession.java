@@ -37,19 +37,24 @@ public class SSHSession {
     }
 
 
-    public void copy(String filename, InputStream file) throws JSchException, SftpException {
+    public void copy(String dir, String filename, InputStream file) throws JSchException, SftpException {
         Session session = createSession();
 
         session.connect();
 
+        //create all missing directories via ssh
+        ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
+        channelssh.setCommand("mkdir -p "+dir);
+        channelssh.connect();
+        channelssh.disconnect();
+
+        //create a sftp channel
         ChannelSftp channel;
         channel = (ChannelSftp) session.openChannel("sftp");
         channel.connect();
-        // If you want you can change the directory using the following line.
-        // channel.cd(RemoteDirectoryPath)
 
-        channel.put(file, filename);
-
+        channel.cd(dir); //change the directory
+        channel.put(file, filename); //copy the file
 
         channel.disconnect();
         session.disconnect();
