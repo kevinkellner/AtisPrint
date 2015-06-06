@@ -11,7 +11,7 @@ import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 import java.io.FileNotFoundException;
 
 public class PrintActivity extends Activity implements AsyncResponse {
-    
+
 
     protected static int LOGIN_DATA_REQUEST = 0x01;
     protected static int SIGN_IN_REQUEST = 0x02;
@@ -30,7 +30,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-        
+
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.equals("application/pdf")) {
                 try {
@@ -39,8 +39,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                } 
-            } 
+                }
+            }
         } else {
             setContentView(R.layout.activity_print);
         }
@@ -49,6 +49,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
     /**
      * This method receives an intent from the onCreate() method. The intent contains the PDF file that will be printed later on.
      * This method then creates a new intent and launches the SignInActivity which will provide us with the user's credentials.
+     *
      * @throws FileNotFoundException if the file is not found
      */
     private void handleAsyncSendPdf() throws FileNotFoundException {
@@ -56,9 +57,10 @@ public class PrintActivity extends Activity implements AsyncResponse {
         //create new intent 
         Intent signIn = new Intent(this, RetrieveLoginActivity.class);
         //TODO: Make two different classes? One for getting, one for setting user data?
-        
+
         startActivityForResult(signIn, LOGIN_DATA_REQUEST);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOGIN_DATA_REQUEST) {
@@ -76,7 +78,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
             if (resultCode == RESULT_OK) {
                 try {
                     startPrintJob(data);
-                } catch(FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             } else if (resultCode == RESULT_CANCELED) {
@@ -102,21 +104,21 @@ public class PrintActivity extends Activity implements AsyncResponse {
         ssh.execute(printJob);
     }
 
-    
+
     public String getUsername() {
         return username;
     }
-    
+
     public String getPassword() {
         return password;
     }
 
     @Override
     public void processFinish(String output) {
-            Toast.makeText(this, output, Toast.LENGTH_LONG).show();
-            System.out.println(output);
-            finish();   
-        
+        Toast.makeText(this, output, Toast.LENGTH_LONG).show();
+        System.out.println(output);
+        finish();
+
 
     }
 

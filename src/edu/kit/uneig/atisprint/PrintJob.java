@@ -3,7 +3,7 @@ package edu.kit.uneig.atisprint;
 import java.io.InputStream;
 
 public class PrintJob {
-    
+
     private InputStream file;
     private String username;
     private String password;
@@ -23,7 +23,7 @@ public class PrintJob {
     }
 
     /**
-     * @param file the file to set
+     * @param is the file to set
      */
     public void setFile(InputStream is) {
         this.file = is;
@@ -98,7 +98,6 @@ public class PrintJob {
     public void setPrinter(String printer) {
         this.printer = printer;
     }
-    
-    
+
 
 }

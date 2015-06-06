@@ -32,12 +32,9 @@ public class SSHSession {
     }
 
 
-
     public SSHSession(String username, String password, String hostname) {
         this(username, password, hostname, 22);
     }
-
-
 
 
     public void copy(String filename, InputStream file) throws JSchException, SftpException {

@@ -35,19 +35,19 @@ public abstract class LoginActivity extends Activity {
 
     /**
      * Retrieves the user name saved in the preferences, returns NO_VALUE if the user name is not stored.
+     *
      * @return the user name saved in the preferences, return NO_VALUE if the user name is not stored.
      */
     public String getUsername() {
-        String username = settings.getString("username", NO_VALUE);
-        return username;
+        return settings.getString("username", NO_VALUE);
     }
 
     /**
      * Retrieves the password saved in the preferences, returns NO_VALUE if the password is not stored.
+     *
      * @return the password saved in the preferences, return NO_VALUE if the password is not stored.
      */
     public String getPassword() {
-        String password = settings.getString("password", NO_VALUE);
-        return password;
+        return settings.getString("password", NO_VALUE);
     }
 }

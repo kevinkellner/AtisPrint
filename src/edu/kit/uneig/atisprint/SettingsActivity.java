@@ -9,7 +9,7 @@ import android.view.View;
 import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 public class SettingsActivity extends Activity {
-    
+
     protected static int SIGN_IN_REQUEST = 0xFF;
 
     @Override
@@ -17,7 +17,7 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
     }
-    
+
     public void onClickPrint(View v) {
         Intent intent = new Intent(this, SaveLoginActivity.class);
         startActivityForResult(intent, SIGN_IN_REQUEST);
@@ -35,10 +35,10 @@ public class SettingsActivity extends Activity {
             } else if (resultCode == RESULT_CANCELED) {
                 System.out.println("Not Okay");
                 //TODO: yeah..
-            } 
+            }
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

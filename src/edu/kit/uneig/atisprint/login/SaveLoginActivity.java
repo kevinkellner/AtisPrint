@@ -40,6 +40,7 @@ public class SaveLoginActivity extends LoginActivity {
     /**
      * This method is called when the user clicks the 'Ok' button within the password and user name prompt that appears
      * when trying to set the credentials.
+     *
      * @param w the view where the user enters his credentials.
      */
     public void onClickOk(View w) {
@@ -74,6 +75,7 @@ public class SaveLoginActivity extends LoginActivity {
 
     /**
      * Checks whether a certain user name is valid by matching it with the criteria of the ATIS account creation
+     *
      * @param username the username to check
      * @return true if the username matches the following regex {@code s_[a-zA-Z]*}
      */
