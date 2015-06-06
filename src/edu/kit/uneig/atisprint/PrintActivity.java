@@ -101,8 +101,6 @@ public class PrintActivity extends Activity implements AsyncResponse {
         Toast.makeText(this, output, Toast.LENGTH_LONG).show();
         System.out.println(output);
         finish();
-
-
     }
 
 }
