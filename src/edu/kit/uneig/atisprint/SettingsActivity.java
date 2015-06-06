@@ -1,7 +1,9 @@
 package edu.kit.uneig.atisprint;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +27,10 @@ public class SettingsActivity extends Activity {
     private final int changeUser = 0;
     private final int selectPrinter = 1;
 
+    final CharSequence printers[] = new CharSequence[] {"pool-sw1-raw", "pool-sw2-raw", "pool-sw3-raw", "pool-farb1-raw"};
+
+    private String printer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +44,8 @@ public class SettingsActivity extends Activity {
     }
 
     private String getPrinter() {
-        return "PrinterTODO";
+        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
+        return prefs.getString("printer", printers[0].toString());
     }
 
     private void initializeListView() {
@@ -63,6 +70,14 @@ public class SettingsActivity extends Activity {
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(new ListItemListener());
         listView.setAdapter(mAdapter);
+    }
+
+    private void setPrinter(String name) {
+        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("printer", name);
+        editor.apply();
+        initializeListView();
     }
 
 
@@ -103,8 +118,20 @@ public class SettingsActivity extends Activity {
                     startActivityForResult(signIn, changeUser);
                     break;
                 case selectPrinter:
-                    //TODO add printer selection activity.
+                    showPrinterSelection();
             }
+        }
+
+        private void showPrinterSelection() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle("Select a printer");
+            builder.setItems(printers, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    setPrinter(printers[which].toString());
+                }
+            });
+            builder.show();
         }
     }
 }
