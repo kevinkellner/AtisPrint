@@ -22,32 +22,24 @@ import java.util.Map;
 
 public class SettingsActivity extends Activity {
 
-    protected static int SIGN_IN_REQUEST = 0xFF;
-
     private final int changeUser = 0;
     private final int selectPrinter = 1;
 
     final CharSequence printers[] = new CharSequence[] {"pool-sw1-raw", "pool-sw2-raw", "pool-sw3-raw", "pool-farb1-raw"};
 
-    private String printer;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
         initializeListView();
     }
 
-    private String getUsername() {
-        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
-        return prefs.getString("username", "No User saved");
-    }
-
-    private String getPrinter() {
-        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
-        return prefs.getString("printer", printers[0].toString());
-    }
-
+    /**
+     * Initializes the ListView of this Activity. The ListView consists of an item and a subitem for each entry.
+     */
     private void initializeListView() {
         //titles contains all the items in the ListView, subtitles are their subitems
         final String[] titles = new String[] {"Change user", "Select printer"};
@@ -72,19 +64,42 @@ public class SettingsActivity extends Activity {
         listView.setAdapter(mAdapter);
     }
 
-    private void setPrinter(String name) {
-        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("printer", name);
-        editor.apply();
-        initializeListView();
+    /**
+     * Returns the username that is saved in the Preferences of this application or
+     * "No user saved" if no user is saved
+     * @return the username that is saved in the Preferences of this application
+     */
+    private String getUsername() {
+        return prefs.getString("username", "No User saved");
+    }
+
+    /**
+     * Returns the printer that is saved in the Preferences of this application or
+     * the first printer if no printer is saved
+     * @return the printer that is saved in the Preferences of this application.
+     */
+    private String getPrinter() {
+        return prefs.getString("printer", printers[0].toString());
+    }
+
+    /**
+     * Sets the printer to the specified printer and updates the listView afterwards.
+     * The id corresponds to the index in the printers array.
+     * @param id the id of the printer
+     */
+    private void setPrinter(int id) {
+        if (id < printers.length) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("printer", printers[id].toString());
+            editor.apply();
+            initializeListView();
+        }
     }
 
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == changeUser) {
-            initializeListView();
-        } else if (requestCode == selectPrinter) {
             initializeListView();
         }
     }
@@ -108,6 +123,9 @@ public class SettingsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This Listener is used for the ListItems inside the ListView.
+     */
     private class ListItemListener implements AdapterView.OnItemClickListener {
 
         @Override
@@ -122,13 +140,17 @@ public class SettingsActivity extends Activity {
             }
         }
 
+        /**
+         * Shows a pop up window in which the user can select one printer which will then be saved to the Preference
+         * file of this application.
+         */
         private void showPrinterSelection() {
             AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
             builder.setTitle("Select a printer");
             builder.setItems(printers, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    setPrinter(printers[which].toString());
+                    setPrinter(which);
                 }
             });
             builder.show();
