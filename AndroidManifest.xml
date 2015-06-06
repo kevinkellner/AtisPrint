@@ -56,7 +56,8 @@
         </activity>
         <activity
             android:name=".login.SignInActivity"
-            android:label="@string/title_activity_sign_in" >
+            android:label="@string/title_activity_sign_in"
+            android:theme="@android:style/Theme.Holo.Light.Dialog">
         </activity>
     </application>
 
