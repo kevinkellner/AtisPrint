@@ -9,14 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.TwoLineListItem;
-import edu.kit.uneig.atisprint.login.ObscuredSharedPreferences;
 import edu.kit.uneig.atisprint.login.SaveLoginActivity;
 
 import java.util.ArrayList;
@@ -35,7 +29,19 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        initializeListView();
+    }
 
+    private String getUsername() {
+        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
+        return prefs.getString("username", "No User saved");
+    }
+
+    private String getPrinter() {
+        return "PrinterTODO";
+    }
+
+    private void initializeListView() {
         //titles contains all the items in the ListView, subtitles are their subitems
         final String[] titles = new String[] {"Change user", "Select printer"};
         final String[] subtitles = new String[] {getUsername(), getPrinter()};
@@ -50,43 +56,21 @@ public class SettingsActivity extends Activity {
         }
 
         SimpleAdapter mAdapter = new SimpleAdapter(this, data,
-                                                    android.R.layout.simple_list_item_2,
-                                                    new String[]{"title", "subtitle"},
-                                                    new int[]{android.R.id.text1, android.R.id.text2});
+                android.R.layout.simple_list_item_2,
+                new String[]{"title", "subtitle"},
+                new int[]{android.R.id.text1, android.R.id.text2});
 
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(new ListItemListener());
         listView.setAdapter(mAdapter);
     }
 
-    private String getUsername() {
-        SharedPreferences prefs = getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
-        return prefs.getString("username", "No User saved");
-    }
-
-    private String getPrinter() {
-        return "PrinterTODO";
-    }
-
-
-    public void onClickPrint(View v) {
-        Intent intent = new Intent(this, SaveLoginActivity.class);
-        startActivityForResult(intent, SIGN_IN_REQUEST);
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SIGN_IN_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                String username = data.getStringExtra("username");
-                String password = data.getStringExtra("password");
-                boolean savePw = data.getBooleanExtra("savePw", false);
-                System.out.println(username);
-                System.out.println(password);
-                //TODO: Save user credentials if need be
-            } else if (resultCode == RESULT_CANCELED) {
-                System.out.println("Not Okay");
-                //TODO: yeah..
-            }
+        if (requestCode == changeUser) {
+            initializeListView();
+        } else if (requestCode == selectPrinter) {
+            initializeListView();
         }
     }
 
@@ -116,7 +100,7 @@ public class SettingsActivity extends Activity {
             switch (position) {
                 case changeUser:
                     Intent signIn = new Intent(getBaseContext(), SaveLoginActivity.class);
-                    startActivity(signIn);
+                    startActivityForResult(signIn, changeUser);
                     break;
                 case selectPrinter:
                     //TODO add printer selection activity.
