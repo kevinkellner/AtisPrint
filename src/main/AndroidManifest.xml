@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".PrintActivity"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/print_name"
             android:taskAffinity=""
             android:excludeFromRecents="true"
