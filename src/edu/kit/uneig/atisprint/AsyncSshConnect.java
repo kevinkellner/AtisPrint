@@ -27,24 +27,24 @@ public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
         String printer = params[0].getPrinter(); //TODO make it possible to print more than one file(?)
         String filename = params[0].getFilename();
         String dir = params[0].getDirectory();
+
         SSHSession ssh = new SSHSession(user, password, hostname, port);
 
         String ret = "";
         try {
             ssh.copy(dir, filename, fis);
-//                ret = ssh.execute("lp -d " + printer + " " + filename);
-            ret = ssh.execute(createTestFile);
+            if (! BuildConfig.DEBUG) {
+                ret = ssh.execute("lp -d " + printer + " " + filename);
+            }
             fis.close();
-        } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (FileNotFoundException e) {
+            onPostExecute("Error: The file was not found. Please try again.");
         } catch (SftpException e) {
-            e.printStackTrace();
+            onPostExecute("Error: An Sftp Exception occurred. Please try again.");
         } catch (IOException e) {
-            e.printStackTrace();
+            onPostExecute("Error: An I/O Exception occurred. Please try again.");
         } catch (JSchException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            onPostExecute("Error: Authentication with the SSH Server failed.");
         }
 
         return ret;
