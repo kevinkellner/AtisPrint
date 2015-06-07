@@ -21,13 +21,10 @@ idea {
 }
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'atisprint'
-            keyPassword '123456'
-            storeFile file('C:/Users/kelln_000/Dropbox/Privates/keystore')
-            storePassword '123456'
-        }
+    if(project.hasProperty("AtisPrint.signing") &&
+            new File(project.property("AtisPrint.signing") + ".gradle").exists()) {
+        apply from: project.property("AtisPrint.signing") + ".gradle";
+        //This is here to not upload my keystore password to github.
     }
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
@@ -40,7 +37,6 @@ android {
         targetSdkVersion 21
         versionCode 2
         versionName "1.1"
-        signingConfig signingConfigs.config
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
@@ -52,20 +48,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
-    }
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
     productFlavors {
     }
