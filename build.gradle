@@ -7,9 +7,17 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'idea'
 
 repositories {
     mavenCentral()
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
 }
 
 android {
@@ -43,6 +51,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
     sourceSets {
         main {
@@ -64,7 +73,6 @@ android {
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jcraft:jsch:0.1.52'
     compile 'org.jsoup:jsoup:1.7.2'
