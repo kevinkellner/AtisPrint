@@ -31,13 +31,13 @@ public class SettingsActivity extends Activity {
 
     final CharSequence printers[] = new CharSequence[] {"pool-sw1", "pool-sw2", "pool-sw3", "pool-farb1"};
 
-    private PreferencesWrapper prefs;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        prefs = new PreferencesWrapper(this);
+        prefs = getApplicationContext().getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
         initializeListView();
     }
 
@@ -94,7 +94,8 @@ public class SettingsActivity extends Activity {
      */
     private void setPrinter(int id) {
         if (id < printers.length) {
-            prefs.setString("printer", printers[id].toString());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("printer", printers[id].toString()).apply();
             initializeListView();
         }
     }
@@ -106,7 +107,8 @@ public class SettingsActivity extends Activity {
     private void setDirectory(String dir) {
         String regEx = "([a-zA-Z]/?)+([a-zA-Z]+)?/?";
         if (dir.matches(regEx)) {
-            prefs.setString("dir", dir);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("dir", dir).apply();
             initializeListView();
         } else {
             Toast.makeText(this, "The directory is invalid", Toast.LENGTH_LONG).show();
