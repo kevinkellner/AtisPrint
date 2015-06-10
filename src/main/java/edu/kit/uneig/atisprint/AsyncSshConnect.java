@@ -3,8 +3,6 @@ package edu.kit.uneig.atisprint;
 import android.os.AsyncTask;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import edu.kit.uneig.atisprint.login.LoginPromptActivity;
-import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

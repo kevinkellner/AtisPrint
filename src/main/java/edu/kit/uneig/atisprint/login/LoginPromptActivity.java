@@ -1,7 +1,9 @@
 package edu.kit.uneig.atisprint.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -26,7 +28,8 @@ public class LoginPromptActivity extends Activity {
     /**
      * This class will be used to access the database of this application.
      */
-    private PreferencesWrapper prefs;
+    private SharedPreferences prefs;
+    private ObscuredSharedPreferences secPrefs;
     private EditText tfUsername;
     private EditText tfPassword;
     private CheckBox chkSavePw;
@@ -36,7 +39,8 @@ public class LoginPromptActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         returnIntent = new Intent();
-        prefs = new PreferencesWrapper(this);
+        prefs = getApplicationContext().getSharedPreferences("AtisPrint", MODE_PRIVATE);
+        secPrefs = ObscuredSharedPreferences.getPrefs(getApplicationContext(), "AtisPrint", MODE_PRIVATE);
         setUserData();
     }
 
@@ -48,7 +52,7 @@ public class LoginPromptActivity extends Activity {
         chkSavePw = (CheckBox) findViewById(R.id.chkSavePw);
 
         String username = prefs.getString("username", NO_VALUE);
-        String password = prefs.getStringSecure("password", NO_VALUE);
+        String password = secPrefs.getString("password", NO_VALUE);
 
         //check if there is already a saved username and/or password and set them into the text fields.
         if (!username.equals(NO_VALUE)) tfUsername.setText(username);
@@ -67,15 +71,21 @@ public class LoginPromptActivity extends Activity {
         String username = tfUsername.getText().toString();
         boolean savePw = chkSavePw.isChecked();
 
+        SharedPreferences.Editor editor = prefs.edit();
+
         //save username in plaintext
-        prefs.setString("username", username);
-        prefs.setBoolean("savePw", savePw);
+        editor.putString("username", username);
+        editor.putBoolean("savePw", savePw);
+        editor.apply(); //save now because we may need to change the editor to store the password
+
         //use ObscuredSharedPreferences to encrypt password
         if (savePw) {
-            prefs.setStringSecure("password", password);
+            editor = secPrefs.edit();
+            editor.putString("password", password);
         } else {
-            prefs.remove("password");
+            editor.remove("password");
         }
+        editor.apply();
 
         //return username and pw as result of the activity
         returnIntent.putExtra("username", username);

@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import edu.kit.uneig.atisprint.login.LoginPromptActivity;
-import edu.kit.uneig.atisprint.login.PreferencesWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
