@@ -1,7 +1,9 @@
 package edu.kit.uneig.atisprint;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -16,14 +18,16 @@ public class PrintActivity extends Activity implements AsyncResponse {
     protected static int SIGN_IN_PROMPT = 0x02;
 
     private Uri receivedUri;
-    private PreferencesWrapper pref;
+    private SharedPreferences prefs;
+    private SharedPreferences secPrefs;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pref = new PreferencesWrapper(this);
+        prefs = getApplicationContext().getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
+        secPrefs = getApplicationContext().getSharedPreferences("AtisPrint", Context.MODE_PRIVATE);
 
         // Get intent, action and MIME type
         Intent intent = getIntent();
@@ -46,8 +50,8 @@ public class PrintActivity extends Activity implements AsyncResponse {
      */
     private void handleSendPdf(Intent intent) {
         receivedUri = intent.getParcelableExtra(Intent.EXTRA_STREAM); //save the uri of the file
-        String username = pref.getString("username", "--");
-        String password = pref.getStringSecure("password", "--");
+        String username = prefs.getString("username", "--");
+        String password = secPrefs.getString("password", "--");
 
         if (username.equals("--") || password.equals("--")) {
             Intent prompt = new Intent(this, LoginPromptActivity.class);
@@ -80,10 +84,10 @@ public class PrintActivity extends Activity implements AsyncResponse {
             printJob.setFilename(uri.substring(uri.lastIndexOf("/") + 1));
             printJob.setUsername(data.getStringExtra("username"));
             printJob.setPassword(data.getStringExtra("password"));
-            printJob.setPrinter(pref.getString("printer", "pool-sw1"));
+            printJob.setPrinter(prefs.getString("printer", "pool-sw1"));
             printJob.setHostname("i08fs1.ira.uka.de");
             printJob.setPort(22);
-            printJob.setDirectory(pref.getString("dir", "AtisPrint"));
+            printJob.setDirectory(prefs.getString("dir", "AtisPrint"));
 
             Toast.makeText(this, "Printing " + printJob.getFilename() + " on " + printJob.getPrinter(), Toast.LENGTH_LONG).show();
 
