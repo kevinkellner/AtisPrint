@@ -101,7 +101,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
 
     @Override
     public void processFinish(String output) {
-//        Toast.makeText(this, output, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, output, Toast.LENGTH_LONG).show();
 //        System.out.println(output);
         finish();
     }
