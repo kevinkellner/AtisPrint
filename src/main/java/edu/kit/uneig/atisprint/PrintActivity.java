@@ -86,7 +86,7 @@ public class PrintActivity extends Activity implements AsyncResponse {
             printJob.setPrinter(prefs.getString("printer", "pool-sw1"));
             printJob.setHostname("i08fs1.ira.uka.de");
             printJob.setPort(22);
-            printJob.setDirectory(prefs.getString("dir", "AtisPrint"));
+
 
             Toast.makeText(this, "Printing " + printJob.getFilename() + " on " + printJob.getPrinter(), Toast.LENGTH_LONG).show();
 

@@ -106,6 +106,9 @@ public class SettingsActivity extends Activity {
     private void setDirectory(String dir) {
         String regEx = "([a-zA-Z]/?)+([a-zA-Z]+)?/?";
         if (dir.matches(regEx)) {
+            if (dir.charAt(dir.length()-1) != '/') {
+                dir = dir +"/";
+            }
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("dir", dir).apply();
             initializeListView();

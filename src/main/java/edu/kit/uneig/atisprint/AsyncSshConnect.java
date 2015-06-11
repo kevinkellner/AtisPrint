@@ -32,7 +32,7 @@ public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
         try {
             ssh.copy(dir, filename, fis);
             if (! BuildConfig.DEBUG) {
-                ret = ssh.execute("lp -d " + printer + " " + filename);
+                ret = ssh.execute("lp -d " + printer + " " + dir + filename);
             }
             fis.close();
         } catch (FileNotFoundException e) {
