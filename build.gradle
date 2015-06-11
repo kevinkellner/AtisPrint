@@ -6,6 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.1.2'
     }
 }
+
 apply plugin: 'com.android.application'
 apply plugin: 'idea'
 
@@ -35,8 +36,8 @@ android {
         applicationId "edu.kit.uneig"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.1.1"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
@@ -60,4 +61,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.7.2'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+    androidTestCompile 'junit:junit:4.10'
 }
