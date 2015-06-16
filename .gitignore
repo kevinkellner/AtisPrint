@@ -25,8 +25,6 @@ proguard/
 # Log Files
 *.log
 
-*.class
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -40,3 +38,5 @@ hs_err_pid*
 
 #.idea folder
 /.idea
+
+loginData
