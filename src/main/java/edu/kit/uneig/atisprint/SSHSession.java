@@ -1,11 +1,6 @@
 package edu.kit.uneig.atisprint;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,7 +26,7 @@ public class SSHSession extends SSHInterface {
         super(username, password, hostname);
     }
 
-
+    @Override
     public void copy(String dir, String filename, InputStream file) throws JSchException, SftpException {
         Session session = createSession();
 
@@ -39,7 +34,7 @@ public class SSHSession extends SSHInterface {
 
         //create all missing directories via ssh
         ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
-        channelssh.setCommand("mkdir -p "+dir);
+        channelssh.setCommand("mkdir -p " + dir);
         channelssh.connect();
         channelssh.disconnect();
 
@@ -57,23 +52,39 @@ public class SSHSession extends SSHInterface {
     }
 
 
-    public String execute(String command) throws JSchException, IOException {
-        Session session = createSession();
+    @Override
+    public String execute(String command) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            Session session = createSession();
+            session.connect();
 
-        session.connect();
+            Channel channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+            channel.setInputStream(null);
+            ((ChannelExec) channel).setErrStream(System.err);
 
-        // SSH Channel
-        ChannelExec channelssh = (ChannelExec) session.openChannel("exec");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream in = channelssh.getInputStream();
-        channelssh.setOutputStream(baos);
-
-        // Execute command
-        channelssh.setCommand(command);
-        channelssh.connect();
-        channelssh.disconnect();
-
-        return baos.toString();
+            InputStream in = channel.getInputStream();
+            channel.connect();
+            byte[] tmp = new byte[1024];
+            while (true) {
+                while (in.available() > 0) {
+                    int i = in.read(tmp, 0, 1024);
+                    if (i < 0) break;
+                    builder.append(new String(tmp, 0, i));
+                }
+                if (channel.isClosed()) {
+                    System.out.println("exit-status: " + channel.getExitStatus());
+                    break;
+                }
+                Thread.sleep(1000); //we wait because the command needs time to be executed
+            }
+            channel.disconnect();
+            session.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 
     private Session createSession() throws JSchException {
