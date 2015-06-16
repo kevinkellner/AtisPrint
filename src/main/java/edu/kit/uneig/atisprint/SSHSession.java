@@ -16,24 +16,19 @@ import java.util.Properties;
  * @author Kevin Kellner
  * @version 1.0
  */
-public class SSHSession {
+public class SSHSession extends SSHInterface {
 
     private String username;
     private String password;
     private String hostname;
     private int port;
 
-
     public SSHSession(String username, String password, String hostname, int port) {
-        this.username = username;
-        this.password = password;
-        this.hostname = hostname;
-        this.port = port;
+        super(username, password, hostname, port);
     }
 
-
     public SSHSession(String username, String password, String hostname) {
-        this(username, password, hostname, 22);
+        super(username, password, hostname);
     }
 
 
