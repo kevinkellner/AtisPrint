@@ -1,36 +1,40 @@
 package edu.kit.uneig.atisprint.tests;
 
 import com.jcraft.jsch.JSchException;
+import edu.kit.uneig.atisprint.SSHInterface;
 import edu.kit.uneig.atisprint.SSHSession;
+import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Scanner;
 
-import static junit.framework.Assert.assertEquals;
-
 /**
- * Created by kelln_000 on 10.06.2015.
+ * Contains tests for the ssh session class.
  */
 public class SSHSessionTest {
 
-    private SSHSession session;
+    private static SSHInterface session;
 
     @BeforeClass
-    public void setup() {
-        Scanner in = new Scanner(System.in);
-        System.out.println("Enter username");
-        String username = in.next();
-        System.out.println("Enter password");
-        String password = in.next();
-        session = new SSHSession(username, password, "i08fs1.ira.uka.de");
+    public static void setup() throws IOException {
+        Properties prop = new Properties();
+        prop.load(SSHSessionTest.class.getResourceAsStream("loginData"));
+        String username = prop.getProperty("username");
+        String password = prop.getProperty("password");
+        String hostname = prop.getProperty("hostname");
+
+        session = new SSHSession(username, password, hostname);
     }
 
     @Test
-    public void testExecuteDir() throws IOException, JSchException {
+    public void testExecuteDir() throws Exception {
         String response = session.execute("dir");
-        assertEquals("Response of dir command should not be null", response.length(), 0);
+        Assert.assertEquals("Response of dir command should not be null", response.length(), 0);
     }
 
 
