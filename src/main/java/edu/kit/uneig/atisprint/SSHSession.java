@@ -13,11 +13,6 @@ import java.util.Properties;
  */
 public class SSHSession extends SSHInterface {
 
-    private String username;
-    private String password;
-    private String hostname;
-    private int port;
-
     public SSHSession(String username, String password, String hostname, int port) {
         super(username, password, hostname, port);
     }
@@ -48,7 +43,6 @@ public class SSHSession extends SSHInterface {
 
         channel.disconnect();
         session.disconnect();
-
     }
 
 

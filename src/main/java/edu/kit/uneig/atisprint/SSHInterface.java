@@ -11,10 +11,10 @@ import java.io.InputStream;
  */
 public abstract class SSHInterface {
 
-    private String username;
-    private String password;
-    private String hostname;
-    private int port;
+    protected String username;
+    protected String password;
+    protected String hostname;
+    protected int port;
 
     /**
      * Creates a new SSHInterface with the given parameters.
