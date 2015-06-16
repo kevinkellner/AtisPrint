@@ -46,15 +46,17 @@ public abstract class SSHInterface {
     /**
      * Execute the command on the remote server and return the console output as string
      * @param command an ssh command
+     *                @throws Exception if an exception occurs.
      * @return the response of the console on the server
-     */
-    public abstract String execute(String command);
+     * */
+    public abstract String execute(String command) throws Exception;
 
     /**
      * Creates a new file with the specified filename and directory on the remote server.
      * @param dir the directory to save the file to
      * @param filename the name of the file including the extension
      * @param file the InputStream that is to be written to the file.
+     *             @throws Exception if an exception occurs.
      */
-    public abstract void copy(String dir, String filename, InputStream file);
+    public abstract void copy(String dir, String filename, InputStream file) throws Exception;
 }
