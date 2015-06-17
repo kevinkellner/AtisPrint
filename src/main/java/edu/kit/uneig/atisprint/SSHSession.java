@@ -47,9 +47,8 @@ public class SSHSession extends SSHInterface {
 
 
     @Override
-    public String execute(String command) {
+    public String execute(String command) throws JSchException, IOException {
         StringBuilder builder = new StringBuilder();
-        try {
             Session session = createSession();
             session.connect();
 
@@ -71,13 +70,14 @@ public class SSHSession extends SSHInterface {
                     System.out.println("exit-status: " + channel.getExitStatus());
                     break;
                 }
-                Thread.sleep(1000); //we wait because the command needs time to be executed
+                try {
+                    Thread.sleep(1000); //we wait because the command needs time to be executed
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             channel.disconnect();
             session.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return builder.toString();
     }
 
