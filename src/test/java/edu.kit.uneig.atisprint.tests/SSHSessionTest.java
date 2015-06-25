@@ -1,35 +1,29 @@
 package edu.kit.uneig.atisprint.tests;
 
-import android.content.res.Resources;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
-import com.jcraft.jsch.JSchException;
 import edu.kit.uneig.atisprint.SSHInterface;
 import edu.kit.uneig.atisprint.SSHSession;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.Scanner;
 
 /**
  * Contains tests for the ssh session class.
  */
-public class SSHSessionTest extends InstrumentationTestCase{
+public class SSHSessionTest {
 
     private static SSHInterface session;
 
+    public SSHSessionTest() {
+        super();
+    }
+
     @Before
     public void setup() throws Exception {
-        super.setUp();
         Properties prop = new Properties();
-        InputStream instream = getInstrumentation().getTargetContext().getResources().getAssets().open("loginData");
+        InputStream instream = getClass().getResourceAsStream("loginData");
         prop.load(instream);
         String username = prop.getProperty("username");
         String password = prop.getProperty("password");
@@ -40,14 +34,14 @@ public class SSHSessionTest extends InstrumentationTestCase{
 
     @Test
     public void testExecuteDir() throws Exception {
-        String response = session.execute("touch test.txt.iwashere");
-        Assert.assertEquals("Response of dir command should not be null", response.length(), 0);
-        Log.d("Response", response);
+        String response = session.execute("dir");
+        Assert.assertNotEquals("Response of dir command should not be null", response.length(), 0);
     }
 
     @Test
-    public void testCopy() throws Exception {
-        session.copy("test/", "test.txt",  getInstrumentation().getTargetContext().getResources().getAssets().open("test.txt"));
+    public void testCopyFile() throws Exception {
+        InputStream instream = getClass().getClassLoader().getResourceAsStream("test.txt");
+        session.copy("AtisPrintTest/", "test.txt", instream);
     }
 
 
