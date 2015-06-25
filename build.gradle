@@ -30,6 +30,11 @@ android {
         apply from: project.property("AtisPrint.signing") + ".gradle";
         //This is here to not upload my keystore password to github.
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
     lintOptions {
