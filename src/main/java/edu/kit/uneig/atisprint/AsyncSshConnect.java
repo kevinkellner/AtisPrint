@@ -3,7 +3,9 @@ package edu.kit.uneig.atisprint;
 import android.os.AsyncTask;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import edu.kit.uneig.atisprint.network.SSHInterface;
 import edu.kit.uneig.atisprint.network.SSHSession;
+import edu.kit.uneig.atisprint.network.SSHUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,7 +29,7 @@ public class AsyncSshConnect extends AsyncTask<PrintJob, Void, String> {
         String filename = params[0].getFilename();
         String dir = params[0].getDirectory();
 
-        SSHSession ssh = new SSHSession(user, password, hostname, port);
+        SSHInterface ssh = new SSHUtils(new SSHSession(user, password, hostname, port));
 
         String ret = "";
         try {
