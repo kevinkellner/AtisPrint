@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * This class decorates the SSHSession to provide some methods useful for interaction over ssh.
  * @author Kevin Kellner
  * @version 1.0
  */
