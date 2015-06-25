@@ -21,6 +21,9 @@ public class SSHSession extends SSHInterface {
         super(username, password, hostname);
     }
 
+    public SSHSession() {
+    }
+
     @Override
     public void copy(String dir, String filename, InputStream file) throws JSchException, SftpException {
         Session session = createSession();

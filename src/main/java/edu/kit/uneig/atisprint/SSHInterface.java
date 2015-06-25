@@ -43,6 +43,9 @@ public abstract class SSHInterface {
         this.port = 22;
     }
 
+    protected SSHInterface() {
+    }
+
     /**
      * Execute the command on the remote server and return the console output as string
      * @param command an ssh command

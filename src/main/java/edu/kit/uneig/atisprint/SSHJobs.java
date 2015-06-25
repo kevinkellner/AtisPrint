@@ -5,7 +5,7 @@ package edu.kit.uneig.atisprint;
  * @author Kevin Kellner
  * @version 1.0
  */
-public class SSHJobs {
+public class SSHJobs extends SSHSession {
     private SSHInterface ssh;
     public SSHJobs(SSHInterface ssh) {
         this.ssh = ssh;
