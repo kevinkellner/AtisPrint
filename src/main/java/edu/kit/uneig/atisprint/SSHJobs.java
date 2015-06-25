@@ -21,11 +21,15 @@ public class SSHJobs {
         String files[] = fileList.split("\n");
     }
 
+    public void deleteFile(String dir, String file) {
+        ssh.execute("rm" + dir + file);
+    }
+
     public boolean deleteFiles(String dir){
         //TODO dir may not be root dir
         String[] files = getFileList(dir);
         for (String file : files) {
-            ssh.execute("rm "+ dir + file); //Delete all files from directory
+            deleteFile(dir, file); //Delete all files from directory
         }
     }
 }
