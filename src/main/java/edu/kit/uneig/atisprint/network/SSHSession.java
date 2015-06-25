@@ -1,8 +1,7 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.network;
 
 import com.jcraft.jsch.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

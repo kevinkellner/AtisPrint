@@ -1,4 +1,4 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.network;
 
 /**
  * This class decorates the SSHSession to provide some methods useful for interaction over ssh.

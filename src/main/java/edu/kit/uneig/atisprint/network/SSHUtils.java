@@ -1,4 +1,4 @@
-package edu.kit.uneig.atisprint;
+package edu.kit.uneig.atisprint.network;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;

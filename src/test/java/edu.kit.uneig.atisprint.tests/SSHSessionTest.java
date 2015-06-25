@@ -1,7 +1,7 @@
 package edu.kit.uneig.atisprint.tests;
 
-import edu.kit.uneig.atisprint.SSHInterface;
-import edu.kit.uneig.atisprint.SSHSession;
+import edu.kit.uneig.atisprint.network.SSHInterface;
+import edu.kit.uneig.atisprint.network.SSHSession;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
