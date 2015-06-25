@@ -11,21 +11,32 @@ import java.util.Properties;
  * @version 1.0
  */
 public class SSHSession extends SSHInterface {
+    Session session;
 
     public SSHSession(String username, String password, String hostname, int port) {
         super(username, password, hostname, port);
+        try {
+            session = createSession();
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
     }
 
     public SSHSession(String username, String password, String hostname) {
         super(username, password, hostname);
+        try {
+            session = createSession();
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
     }
 
-    public SSHSession() {
+    protected SSHSession() {
     }
 
     @Override
     public void copy(String dir, String filename, InputStream file) throws JSchException, SftpException {
-        Session session = createSession();
+//        Session session = createSession();
 
         session.connect();
 
@@ -51,7 +62,7 @@ public class SSHSession extends SSHInterface {
     @Override
     public String execute(String command) throws JSchException, IOException {
         StringBuilder builder = new StringBuilder();
-            Session session = createSession();
+//            Session session = createSession();
             session.connect();
 
             Channel channel = session.openChannel("exec");
