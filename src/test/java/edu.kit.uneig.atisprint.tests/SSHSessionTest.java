@@ -43,5 +43,12 @@ public class SSHSessionTest extends InstrumentationTestCase{
         Assert.assertEquals("Response of dir command should not be null", response.length(), 0);
     }
 
+    @Test
+    public void testCopyFile() throws Exception {
+        InputStream instream = getInstrumentation().getTargetContext().getResources().getAssets().open("test.txt");
+        session.copy("AtisPrintTest/", "test.txt", instream);
+        wait(10000);
+    }
+
 
 }
